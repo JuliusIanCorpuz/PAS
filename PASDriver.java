@@ -5,9 +5,35 @@ public class PASDriver {
     public static Scanner input = new Scanner(System.in);
     
     public static void main(String[] args){
-        int choice = menu();
-    }
 
+        Customer customer;
+        
+        int choice = menu();
+
+        switch(choice){
+            case 1:
+                customer = new Customer();
+                customer.createAccount();
+                break;
+            case 2:
+                System.out.println("get a policy");
+                break;
+            case 3:
+                System.out.println("cancel a policy");
+                break;
+            case 4:
+                System.out.println("file claim");
+                break;
+            case 5:
+                System.out.println("search customer");
+                break;
+            case 6:
+                System.out.println("search policy");
+                break;
+            case 7:
+                System.out.println("search claim");
+        }
+    }
 
     public static int menu()
     {
@@ -35,8 +61,7 @@ public class PASDriver {
             if(menuChoice < 0 || menuChoice > 8){
                 System.out.println("Input choice is out of range, please try again.");
             }
-        }while((menuChoice < 1) || (menuChoice > 8));
-
+        } while((menuChoice < 1) || (menuChoice > 8));
 
         return menuChoice;
     }
@@ -57,7 +82,7 @@ public class PASDriver {
         return num;
     }
 
-     //validation for user input choice
+    //validation for user input choice
     //  public static boolean choiceChecker(String [] choiceArr, double choiceInput)
     //  {   
     //      Boolean isValid = false;
@@ -71,6 +96,4 @@ public class PASDriver {
     //      }
     //      return isValid;
     //  }
-
-
 }
