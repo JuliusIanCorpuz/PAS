@@ -5,17 +5,19 @@ public class Vehicle extends Policy{
 
     Scanner input = new Scanner(System.in);
 
+    final static String [] colorArr = {"red","orange","yellow","green","blue","indigo","violet"
+                                        ,"silver","white","black","pink","gray","gold"};
+
     private String make;
     private String model;
-    private int purchased_year;
+    private int model_year;
     private String type;
     private String fuel_type;
     private double purchase_price;
     private String color;
     private double premium_charge;
 
-    public void createVehicle()
-    {
+    public void createVehicle(){
         System.out.print("Make: ");
         String make = input.nextLine();
 
@@ -23,7 +25,7 @@ public class Vehicle extends Policy{
         String model = input.nextLine();
 
         System.out.print("Purchased Year: ");
-        int purchasedYear = (int)Math.round(dataTypeValidator(purchasedYear = 0));
+        int modelYear = (int)Math.round(dataTypeValidator(modelYear = 0));
 
         input.nextLine();
         System.out.print("Type: ");
@@ -37,31 +39,30 @@ public class Vehicle extends Policy{
 
         input.nextLine();
         System.out.print("Color: ");
-        String color = input.nextLine();
+        String color = validateColor(color = "");
 
         this.make = make;
         this.model = model;
-        this.purchased_year = purchasedYear;
+        this.model_year = modelYear;
         this.type = type;
         this.fuel_type = fuelType;
         this.purchase_price = purchasePrice;
         this.color = color;
     }
 
-    public void saveVehicle()
-    {
+    public void saveVehicle(){
         try (
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
             ,"root", "admin")
         
             )
             {
-                PreparedStatement statement = conn.prepareStatement("INSERT INTO vehicle (make,model,purchase_year,vehicle_type,fuel_type"
+                PreparedStatement statement = conn.prepareStatement("INSERT INTO vehicle (make,model,model_year,vehicle_type,fuel_type"
                                                                     + ",purchase_price,color,premium_charge,policy_id) VALUES (?,?,?,?,?,?,?,?,?)");
 
                 statement.setString(1, this.make);
                 statement.setString(2, this.model);
-                statement.setInt(3, this.purchased_year);
+                statement.setInt(3, this.model_year);
                 statement.setString(4, this.type);
                 statement.setString(5, this.fuel_type);
                 statement.setDouble(6, this.purchase_price);
@@ -76,8 +77,7 @@ public class Vehicle extends Policy{
             }
     }
 
-    public int getLatestPolicyID()
-    {
+    public int getLatestPolicyID(){
         int lastPolicyId = 0;
 
         try (Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas","root", "admin"))
@@ -111,24 +111,54 @@ public class Vehicle extends Policy{
         return num;
     }
 
-    public double getVehiclePrice()
-    {
+    public double getVehiclePrice(){
         return this.purchase_price;
     }
 
-    public int getVehiclePurchasedYear()
-    {
-        return this.purchased_year;
+    public int getVehicleModelYear(){
+        return this.model_year;
     }
 
-    public void setPremiumCharge(double premiumCharge)
-    {
+    public void setPremiumCharge(double premiumCharge){
         this.premium_charge = premiumCharge;
     }
 
-    public double getPremiumCharge()
-    {
+    public double getPremiumCharge(){
        return this.premium_charge;
+    }
+
+    public  String validateColor(String color){
+        Boolean colorMatch = false;
+        do{
+            System.out.println("Input 'color' if you want to see the supported vehicle colors");
+
+            color = input.nextLine();
+
+            
+
+            for(int index = 0; index < colorArr.length; index++){
+                if(color.equals(colorArr[index])){
+                    colorMatch = true;
+                }
+            }
+
+            if(color.toLowerCase().equals("color")){
+                printVehicleColors();
+            }
+            else if(colorMatch == false){
+                System.out.println("No color matched. Please try again.");
+            }
+
+        }while(!colorMatch);
+        
+        return color;
+    }
+
+    public void printVehicleColors(){
+        for(int index = 0; index < colorArr.length; index++){
+            System.out.print(colorArr[index] + "\t");
+        }
+        
     }
 
 }

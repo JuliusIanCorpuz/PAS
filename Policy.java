@@ -17,14 +17,15 @@ public class Policy extends PolicyHolder{
 
     public void createPolicy()
     {
-        String effectiveDateStr = dateValidator("Effective Date: ",effectiveDateStr = "");  
+        printSampleDateFormat();
+        String effectiveDateStr = dateValidator("Effective Date: ",effectiveDateStr = "",false);  
 
         java.sql.Date effectiveDate = convertStringToDate(0,effectiveDateStr);
         java.sql.Date expirationDate = convertStringToDate(1,effectiveDateStr);
         
         this.effective_date = effectiveDate;
         this.expiration_date = expirationDate;
-        
+         
         System.out.println("Expiration date: " + this.expiration_date);
     }
 
@@ -115,8 +116,7 @@ public class Policy extends PolicyHolder{
                 this.customer_id = idPadding(queryRes.getInt("customer_id"), 4,0);
                 this.policy_holder_id = queryRes.getInt("policy_holder_id");
                 this.cancelled = queryRes.getBoolean("cancelled");
-            } 
-                
+            }    
 
         }catch(SQLException ex){
             System.out.println("Database error occured upon searching policy by ID");

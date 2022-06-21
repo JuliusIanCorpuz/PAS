@@ -1,33 +1,35 @@
 import java.util.*;
 import java.sql.*;
+import java.text.*;
 
 public class PolicyHolder extends Customer {
     
     Calendar calendar = Calendar.getInstance();
+
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
     
     private java.sql.Date date_of_birth;
     private String drivers_license;
     private java.sql.Date drivers_license_issue_date;
+    private int drivers_license_age;
 
     public void createPolicyHolder()
     {
         super.createAccount();
 
-        String dateOfBirth = dateValidator("Date of Birth: ",dateOfBirth = "");
+        String dateOfBirth = dateValidator("Date of Birth: ",dateOfBirth = "",true);
 
         System.out.print("Drivers License: ");
-
         String driversLicense = input.nextLine();
 
-        String driversLicenseIssueDate = dateValidator("Drivers License Issue Date: ",driversLicenseIssueDate = "");
+        String driversLicenseIssueDate = dateValidator("Drivers License Issue Date: ",driversLicenseIssueDate = "",false);
 
         this.date_of_birth = convertStringToDate(0,dateOfBirth);
         this.drivers_license = driversLicense;
         this.drivers_license_issue_date = convertStringToDate(0,driversLicenseIssueDate);
     }
 
-    public Boolean checkPolicyHolderRow()
-    {
+    public Boolean checkPolicyHolderRow(){
         Boolean emptyTable = true;
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
@@ -53,8 +55,7 @@ public class PolicyHolder extends Customer {
         return emptyTable;
     }
 
-    public void savePolicyHolder()
-    {
+    public void savePolicyHolder(){
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
                                                          ,"root", "admin");
@@ -78,8 +79,7 @@ public class PolicyHolder extends Customer {
     }
 
 
-    public int getLatestPolicyHolder()
-    {
+    public int getLatestPolicyHolder(){
         int policyHolderID = 0;
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
@@ -99,8 +99,7 @@ public class PolicyHolder extends Customer {
         return policyHolderID;
     }
 
-    public int getPolicyHolderbyID(int policyHolderIDinput)
-    {
+    public int getPolicyHolderbyID(int policyHolderIDinput){
         int policyHolderID = 0;
 
         try(
@@ -142,11 +141,10 @@ public class PolicyHolder extends Customer {
     }
 
 
-    public java.sql.Date convertStringToDate(int forExpDate, String date)
-    {   
+    public java.sql.Date convertStringToDate(int forExpDate, String date){   
         String [] dateArr = date.split("-");
         int year = Integer.parseInt(dateArr[0]);
-        int month = forExpDate == 1 ?  Integer.parseInt(dateArr[1]) + 4 : Integer.parseInt(dateArr[1]) - 1;
+        int month = forExpDate == 1 ?  Integer.parseInt(dateArr[1]) + 5 : Integer.parseInt(dateArr[1]) - 1;
         int day = Integer.parseInt(dateArr[2]);
 
         calendar.set(year, month, day);
@@ -157,9 +155,42 @@ public class PolicyHolder extends Customer {
         return sqlDate;
     }
 
-    public java.sql.Date getLicenseIssueDate()
-    {
+    public java.sql.Date getLicenseIssueDate(){
        return this.drivers_license_issue_date;
     }
+
+    public int getDriversLicenseAge(){
+       return this.drivers_license_age;
+    }
+
+    public void setDriversLicenseAge(){
+        int driversLicenseIssueYear = Integer.parseInt(this.drivers_license_issue_date.toString().substring(0,4));
+        this.drivers_license_age = currentYear - driversLicenseIssueYear;
+    }
+
+    public Boolean checkDateRange(java.sql.Date dateVar){
+        Boolean outOfRange = true;
+        String currentDate = getCurrentDate().toString();
+        String dateVarString = dateVar.toString();
+        if (currentDate.compareTo(dateVarString) > 0){
+                
+            }
+
+        return outOfRange;
+    }
     
+    public String getCurrentDate(){
+
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day =  calendar.get(Calendar.DATE);
+        int year = calendar.get(Calendar.YEAR);
+        
+        calendar.set(year, month, day);
+        java.util.Date dateUtil = calendar.getTime();
+        java.sql.Date currentDate = new java.sql.Date(dateUtil.getTime());
+        String dateStr = currentDate.toString();
+
+        return dateStr;
+    }
+
 }

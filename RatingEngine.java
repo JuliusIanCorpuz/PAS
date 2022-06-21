@@ -1,4 +1,3 @@
-import java.sql.Date;
 import java.util.Calendar;
 
 public class RatingEngine extends DatabaseController{
@@ -7,18 +6,15 @@ public class RatingEngine extends DatabaseController{
 
     final int currentYear = calendar.get(Calendar.YEAR);
 
-    public double getVehiclePremium(double vehiclePurchase, int yearPurchased, Date driversLicenseIssueDate)
-    {
-        int driversLicenseIssueYear = Integer.parseInt(driversLicenseIssueDate.toString().substring(0,4));
+    public double getVehiclePremium(double vehiclePurchase, int yearPurchased, int driversLicenseAge){
+        
         double vehiclePremium = 0;
-        int driversLicenseAge = currentYear - driversLicenseIssueYear;
         vehiclePremium = (vehiclePurchase * getVehiclePriceFactor(yearPurchased)) + ((vehiclePurchase/100)/driversLicenseAge);
         
         return vehiclePremium;
     }
 
-    public double getVehiclePriceFactor(int yearPurchased)
-    {
+    public double getVehiclePriceFactor(int yearPurchased){
         double vehiclePriceFactor = 0;
         int vehicleAge = currentYear - yearPurchased;
 

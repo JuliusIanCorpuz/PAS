@@ -1,17 +1,18 @@
 import java.sql.*;
-import java.util.*;
 
 public class Claim extends Policy{
 
+    private String claim_id;
     private java.sql.Date date_of_accident;
     private String accident_address;
     private String description;
     private String damage_to_vehicle;
     private double cost_of_repairs;
+    private int policy_id;
 
     public void createClaim()
     {
-        String dateOfAccident = dateValidator("Date of Accident: ",dateOfAccident = "");
+        String dateOfAccident = dateValidator("Date of Accident: ",dateOfAccident = "",false);
 
         System.out.print("Accident Address: ");
         String accidentAddress = input.nextLine();
@@ -56,10 +57,8 @@ public class Claim extends Policy{
         }
     }
 
-    public int checkClaimIfExists()
+    public void searchClaim()
     {
-        int claimID = 0;
-
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
                                                          ,"root", "admin"); )
@@ -71,26 +70,40 @@ public class Claim extends Policy{
             do{
                 System.out.println("Please input an existing claim id (Ex. C000006): ");
                 String claimIDS = "";
-                int claimIdInput = parseStrtoInt(claimIDS);
+                int claimIdInput = parseIdStrtoInt(claimIDS);
                 
                 getClaim = conn.prepareStatement("SELECT * FROM claim where id = " + claimIdInput);
                 queryRes = getClaim.executeQuery(); 
                 
                 if(queryRes.next()){
-                    claimID = queryRes.getInt("id");
+                    this.claim_id = idPadding(queryRes.getInt("id"),6,1);
+                    this.date_of_accident = queryRes.getDate("date_of_accident");
+                    this.accident_address = queryRes.getString("accident_address");
+                    this.description = queryRes.getString("description");
+                    this.damage_to_vehicle = queryRes.getString("damage_to_vehicle");
+                    this.cost_of_repairs  = queryRes.getDouble("repairs_cost");
+                    this.policy_id = queryRes.getInt("policy_id");
                     isExist = true;
                 } else {
-                    System.out.println("Policy with ID = " +  claimID +" doesn't exist");
+                    System.out.println("Policy with ID = " +  claimIdInput +" doesn't exist");
                 }
             }while(!isExist);
 
         } catch(SQLException ex){
-            System.out.println("Database error occured upon checking policy holder existence");
+            System.out.println("Database error occured upon searching a claim" + ex);
         }
 
-        return claimID; 
     }
-    
-    
+
+    public void printClaimDetails()
+    {
+        System.out.println("\nClaim ID: " + this.claim_id + "\n"
+                        + "Date of Accident: " + this.date_of_accident + "\n"
+                        + "Accident Address: " + this.accident_address + "\n"
+                        + "Description: " + this.description + "\n"
+                        + "Damage to Vehicle: " + this.damage_to_vehicle + "\n"
+                        + "Cost of repairs: " + this.cost_of_repairs + "\n"
+                        + "Policy ID: " + this.policy_id + "\n");
+    }
 
 }

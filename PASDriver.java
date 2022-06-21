@@ -6,8 +6,6 @@ public class PASDriver {
     
     public static final StringBuilder res = new StringBuilder();
 
-    
-
     public static void main(String[] args){
 
         System.out.println("Automobile Insurance Policy and Claims Administration System\n");
@@ -28,7 +26,7 @@ public class PASDriver {
                     addAccount(customer);
                     break;
                 case 2:
-                    if(!customer.checkCustomerRow()){
+                    if(!customer.checkTableRow("customer")){
                         int customerAccountID = 0;
                         int policyHolderId = 0;
                         double policyPrice = 0;
@@ -57,13 +55,15 @@ public class PASDriver {
                                 }
                             }
                         }
+
+                        policyHolder.setDriversLicenseAge();
                         
                         System.out.print("Number of vehicles: ");
                         int numOfVehicles = (int)Math.round(dataTypeValidator(numOfVehicles = 0));
 
                         Vehicle[] vehiclesArr = new Vehicle[numOfVehicles];
 
-                        policyPrice = addVehicle(vehiclesArr, policyHolder.getLicenseIssueDate());
+                        policyPrice = addVehicle(vehiclesArr, policyHolder.getDriversLicenseAge());
 
                         System.out.println("Policy details are now COMPLETE. Are you sure you want to BUY this policy?");
                         System.out.println("Derived policy premium: " + policyPrice);
@@ -86,61 +86,72 @@ public class PASDriver {
                         }
 
                     } else {
-                        System.out.println("There are no customers saved. Do you want to create new Customer Account?");
-                        System.out.println("Input 'yes' to create new, input any key to exit customer creation.");
-                        String confirmStr = input.next();
-                        if(confirmStr.equals("yes")){
-                            addAccount(customer);
-                        } else {
-                            System.out.println("Customer Account creation cancelled.");
-                        }
+                        printEmptyTable("Customer");
                     }
                     break;
                 case 3:
                     System.out.println("Cancel a Policy");
-                    policyID = policy.checkPolicyIfExists();
-                    policy.cancelPolicy(policyID);
+                    if(!policy.checkTableRow("policy")){
+                        policyID = policy.checkPolicyIfExists();
+                        policy.cancelPolicy(policyID);
+                    } else {
+                        printEmptyTable("Policy");
+                    }
                     break;
                 case 4:
                     Claim claim = new Claim();
                     System.out.println("File a Claim");
-                    policyID = policy.checkPolicyIfExists();
-                    System.out.println("policyID"+ policyID);
-                    if(policyID > 0 ){
-                        claim.createClaim();
-                        claim.fileClaim(policyID);
+                    if(!policy.checkTableRow("policy")){
+
+                        policyID = policy.checkPolicyIfExists();
+
+                        if(policyID > 0 ){
+                            claim.createClaim();
+                            claim.fileClaim(policyID);
+                        }
+                    } else {
+                        printEmptyTable("Policy");
                     }
+                    
                     break;
                 case 5:
                     System.out.println("Search Customer");
-                    String customerIdStr = customer.searchCustomerByName();
+                    if(!customer.checkTableRow("customer")){
+                        String customerIdStr = customer.searchCustomerByName();
 
-                    if(customerIdStr != "")
-                    {
-                        customer.printCustomerDetails(customerIdStr);
+                        if(customerIdStr != ""){
+                            customer.printCustomerDetails(customerIdStr);
+                        }
+                    } else {
+                        printEmptyTable("Customer");
                     }
-
                     break;
                 case 6:
                     System.out.println("Search Policy");
-                    policyID = policy.checkPolicyIfExists();
+                    if(!policy.checkTableRow("policy")){
+                        policyID = policy.checkPolicyIfExists();
 
-                    if(policyID > 0)
-                    {
-                        policy.searchPolicyByID(policyID);
-                        policy.printPolicyDetails();
+                        if(policyID > 0){
+                            policy.searchPolicyByID(policyID);
+                            policy.printPolicyDetails();
+                        }
+
+                    } else {
+                        printEmptyTable("Policy");
                     }
-
                     break;
                 case 7:
-                    System.out.println("Search Claim");
                     
                     claim = new Claim();
 
-                    int claimID =  claim.checkClaimIfExists();
-
+                    System.out.println("Search Claim\n");
                     
-
+                    if(!claim.checkTableRow("claim")){
+                        claim.searchClaim();
+                        claim.printClaimDetails();
+                    } else {
+                        printEmptyTable("Claim");
+                    }
 
                     break;
                 case 8:
@@ -152,8 +163,7 @@ public class PASDriver {
         }while(choice != 8);
     }
 
-    public static int menu()
-    {
+    public static int menu(){
 
         String [] choiceList = {
             "Create a new Customer Account",
@@ -203,23 +213,7 @@ public class PASDriver {
         return num;
     }
 
-    //validation for user input choice
-    //  public static boolean choiceChecker(String [] choiceArr, double choiceInput)
-    //  {   
-    //      Boolean isValid = false;
-    //      for(int index = 0; index < choiceArr.length; index ++){
-    //          if(choiceInput == choiceArr[index]){
-    //              isValid = true;
-    //          } 
-    //      }
-    //      if(!isValid){
-    //          System.out.println("Invalid Input, please try again");
-    //      }
-    //      return isValid;
-    //  }
-
-    public static void addAccount(Customer customer)
-    {
+    public static void addAccount(Customer customer){
             customer.createAccount();
                 
             System.out.println("Are you sure you want to save this customer?");
@@ -232,8 +226,7 @@ public class PASDriver {
             }
     }
 
-    public static String policyHolderChoice()
-    {
+    public static String policyHolderChoice(){
     	String choice;
         input.nextLine();
     	do {
@@ -248,8 +241,7 @@ public class PASDriver {
     	return choice;
     }
 
-    public static double  addVehicle(Vehicle[] vehiclesArr,java.sql.Date driversLicenseIssueDate)
-    {
+    public static double  addVehicle(Vehicle[] vehiclesArr,int driversLicenceAge){
         double policyPrice = 0;
 
         for(int index = 0; index < vehiclesArr.length; index++)
@@ -257,7 +249,7 @@ public class PASDriver {
             vehiclesArr[index]  = new Vehicle();
             System.out.println("Creating vehicle #"+ (index + 1));
             vehiclesArr[index].createVehicle();
-            vehiclesArr[index].setPremiumCharge(vehiclesArr[index].getVehiclePremium(vehiclesArr[index].getVehiclePrice(), vehiclesArr[index].getVehiclePurchasedYear(), driversLicenseIssueDate));
+            vehiclesArr[index].setPremiumCharge(vehiclesArr[index].getVehiclePremium(vehiclesArr[index].getVehiclePrice(), vehiclesArr[index].getVehicleModelYear(), driversLicenceAge));
             System.out.println("Vehicle premium cost:" + vehiclesArr[index].getPremiumCharge());
             System.out.println("Are you sure you want to add and save this to your Policy?");
             System.out.println("Input 'yes' to add and save. Input any key to re-input the vehicle.");
@@ -274,16 +266,14 @@ public class PASDriver {
         return policyPrice;
     }
 
-    public static void saveVehicletoDB(Vehicle[] vehiclesArr)
-    {
+    public static void saveVehicletoDB(Vehicle[] vehiclesArr){
         for(int index = 0; index < vehiclesArr.length; index++)
         {
             vehiclesArr[index].saveVehicle();
         }
-        
     }
 
-    public static String progress(int pct) {
+    public static String progress(int pct){
         res.delete(0, res.length());
         int numPounds = (pct + 9) / 10;
         for (int progress = 0 ; progress != numPounds ; progress++) {
@@ -295,8 +285,7 @@ public class PASDriver {
         return res.toString();
     }
 
-    public static void printProgressBar()
-    {
+    public static void printProgressBar(){
         for (int counter = 0 ; counter <= 100 ; counter++) {
             try {
                 Thread.sleep(20);
@@ -311,5 +300,9 @@ public class PASDriver {
         }
     }
 
-    
+    public static void printEmptyTable(String tableName){
+        System.out.println("There are no "+ tableName +" saved. Please create a "+tableName+" first.\n");
+    }
+
+
 }

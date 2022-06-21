@@ -1,5 +1,8 @@
 import java.util.*;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 public class Customer extends RatingEngine{
 
@@ -9,8 +12,7 @@ public class Customer extends RatingEngine{
     private String last_name;
     private String address;
 
-    public void createAccount()
-    {
+    public void createAccount(){
         System.out.print("First Name: ");
         String firstName = input.nextLine();
 
@@ -25,8 +27,7 @@ public class Customer extends RatingEngine{
         this.address = address;
     }
 
-    public void saveCustomer()
-    {
+    public void saveCustomer(){
         try ( Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
                                                             ,"root", "admin"); 
         ){
@@ -55,20 +56,19 @@ public class Customer extends RatingEngine{
                                             +queryRes.getString(3)+"\t\t"
                                             +queryRes.getString(4));  
             }  
-        }catch (SQLException ex){
+        } catch(SQLException ex){
             System.out.println("Database error occured upon saving new customer");
         }
     }
 
-    public Boolean checkCustomerRow()
-    {
+    public Boolean checkTableRow(String tableName){
         Boolean emptyTable = true;
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
                                                          ,"root", "admin"); )
         {
-            PreparedStatement getCustomerAccount = conn.prepareStatement("SELECT COUNT(*) as recordsCount FROM customer");
-            ResultSet queryRes = getCustomerAccount.executeQuery(); 
+            PreparedStatement getRows = conn.prepareStatement("SELECT COUNT(*) as recordsCount FROM "+ tableName);
+            ResultSet queryRes = getRows.executeQuery(); 
 
             while(queryRes.next()){
                 int recordsCount = queryRes.getInt("recordsCount");
@@ -76,14 +76,14 @@ public class Customer extends RatingEngine{
                     emptyTable = false;
                 }
             }
-        } catch (SQLException ex){
-            System.out.println("Database error occured upon checking customer table count");
+        } catch(SQLException ex){
+            System.out.println("Database error occured upon checking row count");
         }
+
         return emptyTable;
     }
 
-    public int checkAccountIfExist(int accountNum)
-    {
+    public int checkAccountIfExist(int accountNum){
         int account_id = 0;
         Boolean isExist = false;
         try(
@@ -117,8 +117,7 @@ public class Customer extends RatingEngine{
         return account_id;
     }
 
-    public String searchCustomerByName()
-    {
+    public String searchCustomerByName(){
         String idStr = "";
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
@@ -149,7 +148,7 @@ public class Customer extends RatingEngine{
                      
                     isExist = true;
                 } else {
-                    System.out.println("");
+                    System.out.println("\nNo matched found.\n");
                 }
             }while(!isExist);
 
@@ -175,63 +174,70 @@ public class Customer extends RatingEngine{
         return num;
     }
 
-    public String dateValidator(String dateLabel, String inputDate)
-    {
+    public String dateValidator(String dateLabel, String inputDate, Boolean forAgechecking){
         String dateFormat = "^[0-9]{4}-(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])$";
         Boolean invalidDate = true;
 
-        do{
-            System.out.print(dateLabel);
-            inputDate = input.nextLine();
-            if(inputDate.matches(dateFormat)){
-                invalidDate = false;
-            } else {
-                System.out.println("Invalid input");
-            }
-        }while(invalidDate);
+        if(forAgechecking){
+            do{
+                System.out.print(dateLabel);
+                printSampleDateFormat();
+                inputDate = input.nextLine();
+                if(inputDate.matches(dateFormat)){
+                    if(!checkIfMinor(inputDate)){
+                        invalidDate = false;
+                    } else {
+                        System.out.println("Policy Holder must be 17 years old or above.");
+                    }
+                } else {
+                    System.out.println("Invalid input");
+                }
+            }while(invalidDate);
+        } else {
+            do{
+                System.out.print(dateLabel);
+                inputDate = input.nextLine();
+                if(inputDate.matches(dateFormat)){
+                    invalidDate = false;
+                } else {
+                    System.out.println("Invalid input");
+                }
+            }while(invalidDate);
+        }
 
         return inputDate;
     }
 
-    public void printCustomerDetails(String idStr)
-    {
+    public void printCustomerDetails(String idStr){
         System.out.println("ID\t First Name\t Last Name\t Address\t");
         System.out.println(idStr + "\t " + this.first_name + "\t " + this.last_name + "\t " + this.address);
     }
 
-
-    public String getFirstName()
-    {
+    public String getFirstName(){
         return this.first_name;
     }
 
-    public String getLastName()
-    {
+    public String getLastName(){
         return this.last_name;
     }
 
-    public String getAddress()
-    {
+    public String getAddress(){
         return this.address;
     }
 
-    public void setAddress(String address)
-    {
+    public void setAddress(String address){
         this.address = address;
     }
 
-    public void setFirstName(String firstName)
-    {
+    public void setFirstName(String firstName){
         this.first_name = firstName;
     }
 
-    public void setLastName(String lastName)
-    {
+    public void setLastName(String lastName){
         this.last_name = lastName;
     }
 
-    public String idPadding(int id, int maxDigits, int claim)
-    {
+    public String idPadding(int id, int maxDigits, int claim){
         String stringId = "";
 
         if(claim > 0){
@@ -242,16 +248,26 @@ public class Customer extends RatingEngine{
         return stringId;
     }
 
-    public int parseStrtoInt(String str)
-    {
-        int strIntVal = 0;
+    public int parseIdStrtoInt(String idStr){
+        int idStrIntVal = 0;
         Boolean invalid;
 
         do{
             try{
-                str = input.nextLine();
-                strIntVal = Integer.parseInt(str.substring(1));
-                invalid = false;
+                idStr = input.nextLine();
+                if(idStr.substring(0,1).toUpperCase().equals("C")){
+                    if(idStr.length() == 7){
+                        idStrIntVal = Integer.parseInt(idStr.substring(1));
+                        invalid = false;
+                    } else {
+                        System.out.println("Claim ID must be 6 digits of length");
+                        invalid = true;
+                    }
+                } else {
+                    System.out.println("Claim ID must start with 'C'");
+                    invalid = true;
+                }
+                
             } catch(NumberFormatException ex){
                 System.out.println("Invalid Input");
                 invalid = true;
@@ -261,6 +277,27 @@ public class Customer extends RatingEngine{
             }
         } while(invalid == true);
 
-        return strIntVal;
+        return idStrIntVal;
     }
+
+    public Boolean checkIfMinor(String dateStr){
+
+        Boolean minor = true;
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateLD = LocalDate.parse(dateStr, dateFormat);
+        Period age = Period.between(dateLD, LocalDate.now());
+        if (age.getYears() < 17) {
+            minor =  true;
+        } else {
+            minor =  false;
+        }
+
+        return minor;
+    }
+
+    public void printSampleDateFormat(){
+        System.out.println("Please input date in this format 'YYYY-MM-DD'");
+    }
+
 }
