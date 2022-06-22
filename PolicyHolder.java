@@ -13,16 +13,16 @@ public class PolicyHolder extends Customer {
     private java.sql.Date drivers_license_issue_date;
     private int drivers_license_age;
 
-    public void createPolicyHolder()
-    {
+    public void createPolicyHolder(){
         super.createAccount();
 
-        String dateOfBirth = dateValidator("Date of Birth: ",dateOfBirth = "",true);
+        String dateOfBirth = validateDate("Date of Birth: ",dateOfBirth = "",true);
 
         System.out.print("Drivers License: ");
         String driversLicense = input.nextLine();
 
-        String driversLicenseIssueDate = dateValidator("Drivers License Issue Date: ",driversLicenseIssueDate = "",false);
+        String driversLicenseIssueDate = validateDate("Drivers License Issue Date: "
+                                                        ,driversLicenseIssueDate = "",false);
 
         this.date_of_birth = convertStringToDate(0,dateOfBirth);
         this.drivers_license = driversLicense;
@@ -33,9 +33,7 @@ public class PolicyHolder extends Customer {
         Boolean emptyTable = true;
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin");
-            )
-        {
+                                                         ,"root", "admin")){
 
             PreparedStatement getCustomerAccount = conn.prepareStatement("SELECT COUNT(*) as recordsCount FROM policy_holder");
             ResultSet queryRes = getCustomerAccount.executeQuery(); 
@@ -46,8 +44,6 @@ public class PolicyHolder extends Customer {
                     emptyTable = false;
                 }
             }
-
-
         } catch (SQLException ex){
             System.out.println("Database Error occured upon checking policy holder table count");
         }
@@ -58,8 +54,8 @@ public class PolicyHolder extends Customer {
     public void savePolicyHolder(){
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin");
-        ){
+                                                         ,"root", "admin")){
+
             PreparedStatement savePolicyHolder = conn.prepareStatement("INSERT INTO policy_holder (first_name,last_name,date_of_birth,"
                                                                         + "address,drivers_license,drivers_license_issue_date)"
                                                                         +"VALUES (?,?,?,?,?,?)");
@@ -83,8 +79,8 @@ public class PolicyHolder extends Customer {
         int policyHolderID = 0;
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin");
-        ){
+                                                         ,"root", "admin")){
+
             PreparedStatement getPolicyHolderID = conn.prepareStatement("SELECT id FROM policy_holder ORDER BY id DESC LIMIT 1");
             ResultSet queryRes = getPolicyHolderID.executeQuery(); 
             
@@ -104,15 +100,15 @@ public class PolicyHolder extends Customer {
 
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin"); )
-        {
+                                                         ,"root", "admin")){
+
             Boolean isExist = false;
             PreparedStatement getPolicyHolderAccount;
             ResultSet queryRes;
             
             do{
                 System.out.println("Please input an existing account policy holder id: ");
-                policyHolderIDinput = (int)Math.round(dataTypeValidator(policyHolderIDinput));
+                policyHolderIDinput = intValidator(policyHolderIDinput);
 
                 getPolicyHolderAccount = conn.prepareStatement("SELECT * FROM policy_holder where id = " + policyHolderIDinput);
                 queryRes = getPolicyHolderAccount.executeQuery(); 

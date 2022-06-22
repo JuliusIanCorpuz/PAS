@@ -1,6 +1,6 @@
 import java.util.Calendar;
 
-public class RatingEngine extends DatabaseController{
+public class RatingEngine extends CustomDBFunctions{
 
     Calendar calendar = Calendar.getInstance();
 

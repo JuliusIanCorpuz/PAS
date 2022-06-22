@@ -10,9 +10,8 @@ public class Claim extends Policy{
     private double cost_of_repairs;
     private int policy_id;
 
-    public void createClaim()
-    {
-        String dateOfAccident = dateValidator("Date of Accident: ",dateOfAccident = "",false);
+    public void createClaim(){
+        String dateOfAccident = validateDate("Date of Accident: ",dateOfAccident = "",false);
 
         System.out.print("Accident Address: ");
         String accidentAddress = input.nextLine();
@@ -24,7 +23,7 @@ public class Claim extends Policy{
         String damageToVehicle = input.nextLine();
 
         System.out.print("Cost of repair: ");
-        double costOfRepair = dataTypeValidator(costOfRepair = 0);
+        double costOfRepair = doubleValidator(costOfRepair = 0);
 
         this.date_of_accident = convertStringToDate(0,dateOfAccident);
         this.accident_address = accidentAddress;
@@ -33,11 +32,10 @@ public class Claim extends Policy{
         this.cost_of_repairs = costOfRepair;
     }
 
-    public void fileClaim(int policyID)
-    {
+    public void fileClaim(int policyID){
         try(Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-        ,"root", "admin"))
-        {
+        ,"root", "admin")){
+
             PreparedStatement fileClaim = conn.prepareStatement("INSERT INTO claim (date_of_accident,accident_address,description,damage_to_vehicle"
                                                                 +",repairs_cost,policy_id) VALUES (?,?,?,?,?,?)");
 
@@ -57,8 +55,7 @@ public class Claim extends Policy{
         }
     }
 
-    public void searchClaim()
-    {
+    public void searchClaim(){
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
                                                          ,"root", "admin"); )
@@ -95,8 +92,7 @@ public class Claim extends Policy{
 
     }
 
-    public void printClaimDetails()
-    {
+    public void printClaimDetails(){
         System.out.println("\nClaim ID: " + this.claim_id + "\n"
                         + "Date of Accident: " + this.date_of_accident + "\n"
                         + "Accident Address: " + this.accident_address + "\n"

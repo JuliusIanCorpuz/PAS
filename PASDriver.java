@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class PASDriver {
+public class PASDriver{
 
     public static Scanner input = new Scanner(System.in);
     
@@ -59,7 +59,7 @@ public class PASDriver {
                         policyHolder.setDriversLicenseAge();
                         
                         System.out.print("Number of vehicles: ");
-                        int numOfVehicles = (int)Math.round(dataTypeValidator(numOfVehicles = 0));
+                        int numOfVehicles = intValidator(numOfVehicles = 0);
 
                         Vehicle[] vehiclesArr = new Vehicle[numOfVehicles];
 
@@ -127,7 +127,7 @@ public class PASDriver {
                     }
                     break;
                 case 6:
-                    System.out.println("Search Policy");
+                    System.out.println("Search Policy\n");
                     if(!policy.checkTableRow("policy")){
                         policyID = policy.checkPolicyIfExists();
 
@@ -188,29 +188,13 @@ public class PASDriver {
         System.out.print("\nPlease input the number of your desired transaction: ");
 
         do{
-            menuChoice = (int)Math.round(dataTypeValidator(menuChoice));
+            menuChoice = intValidator(menuChoice);
             if(menuChoice < 0 || menuChoice > 8){
                 System.out.println("Input choice is out of range, please try again.");
             }
         } while((menuChoice < 1) || (menuChoice > choiceList.length));
 
         return menuChoice;
-    }
-
-    //validation for user input data type
-    public static double dataTypeValidator(double num){
-        boolean invalid;
-        do{
-            try{
-                num = input.nextInt();
-                invalid = false;
-            } catch(InputMismatchException e){
-                input.nextLine();
-                System.out.println("Invalid Input");
-                invalid = true;
-            }
-        }while(invalid == true);
-        return num;
     }
 
     public static void addAccount(Customer customer){
@@ -228,20 +212,19 @@ public class PASDriver {
 
     public static String policyHolderChoice(){
     	String choice;
-        input.nextLine();
     	do {
     		System.out.println("\nInput 'new' to create new Policy Holder. Input 'link' to link existing Policy Holder your policy. ");
     		
-    		choice = input.nextLine(); 
+    		choice = input.next(); 
     		if(!choice.equals("new") && !choice.equals("link")) {
-    			System.out.println("Invalid input");
+    			System.out.println("Invalid inputChoice");
     		}
     	}while(!choice.equals("new") && !choice.equals("link"));
 
     	return choice;
     }
 
-    public static double  addVehicle(Vehicle[] vehiclesArr,int driversLicenceAge){
+    public static double addVehicle(Vehicle[] vehiclesArr,int driversLicenceAge){
         double policyPrice = 0;
 
         for(int index = 0; index < vehiclesArr.length; index++)
@@ -267,9 +250,8 @@ public class PASDriver {
     }
 
     public static void saveVehicletoDB(Vehicle[] vehiclesArr){
-        for(int index = 0; index < vehiclesArr.length; index++)
-        {
-            vehiclesArr[index].saveVehicle();
+        for(Vehicle vehicle: vehiclesArr){
+            vehicle.saveVehicle();
         }
     }
 
@@ -303,6 +285,21 @@ public class PASDriver {
     public static void printEmptyTable(String tableName){
         System.out.println("There are no "+ tableName +" saved. Please create a "+tableName+" first.\n");
     }
-
+    
+    //validation int data input by the user
+    public static int intValidator(int num){
+        boolean invalid;
+        do{
+            try{
+                num = input.nextInt();
+                invalid = false;
+            } catch(InputMismatchException e){
+                input.nextLine();
+                System.out.println("Invalid Input");
+                invalid = true;
+            }
+        }while(invalid == true);
+        return num;
+    }
 
 }

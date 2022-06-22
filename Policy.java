@@ -15,10 +15,8 @@ public class Policy extends PolicyHolder{
     private int policy_holder_id;
     private boolean cancelled;
 
-    public void createPolicy()
-    {
-        printSampleDateFormat();
-        String effectiveDateStr = dateValidator("Effective Date: ",effectiveDateStr = "",false);  
+    public void createPolicy(){
+        String effectiveDateStr = validateDate("Effective Date: ",effectiveDateStr = "",false);  
 
         java.sql.Date effectiveDate = convertStringToDate(0,effectiveDateStr);
         java.sql.Date expirationDate = convertStringToDate(1,effectiveDateStr);
@@ -29,21 +27,19 @@ public class Policy extends PolicyHolder{
         System.out.println("Expiration date: " + this.expiration_date);
     }
 
-    public int checkPolicyIfExists()
-    {
+    public int checkPolicyIfExists(){
         int policyIdInput = 0;
 
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin"); )
-        {
+                                                         ,"root", "admin")){
             Boolean isExist = false;
             PreparedStatement getPolicy;
             ResultSet queryRes;
             
             do{
                 System.out.println("Please input an existing policy id: ");
-                policyIdInput = (int)Math.round(dataTypeValidator(policyIdInput = 0));
+                policyIdInput = intValidator(policyIdInput = 0);
 
                 getPolicy = conn.prepareStatement("SELECT * FROM policy where id = " + policyIdInput);
                 queryRes = getPolicy.executeQuery(); 
@@ -63,11 +59,30 @@ public class Policy extends PolicyHolder{
         return policyIdInput; 
     }
 
-    public void cancelPolicy(int policyID)
-    {
+    public String checkPolicyStatus(int policyID){
+        
+        String policyStatus = "";
+
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin"); )
+                                                         ,"root", "admin")){
+
+            PreparedStatement getPolicyStatus = conn.prepareStatement("SELECT cancelled FROM policy where id = " + policyID);
+            ResultSet queryRes = getPolicyStatus.executeQuery(); 
+
+            
+
+        } catch (SQLException ex){
+            System.out.println("Database Error occur upon saving the policy! " + ex);
+        }
+
+        return policyStatus;
+    }
+
+    public void cancelPolicy(int policyID){
+        try(
+            Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
+                                                         ,"root", "admin"))
         {
 
             PreparedStatement updatePolicy = conn.prepareStatement("UPDATE policy set cancelled = 1 where id = " + policyID);
@@ -79,8 +94,7 @@ public class Policy extends PolicyHolder{
         }
     }
 
-    public void savePolicy(int customerID, int policyHolderId)
-    {
+    public void savePolicy(int customerID, int policyHolderId){
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
                                                          ,"root", "admin")
@@ -101,8 +115,7 @@ public class Policy extends PolicyHolder{
         }
     }
 
-    public void searchPolicyByID(int policyID)
-    {
+    public void searchPolicyByID(int policyID){
         try(Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
             ,"root", "admin"))
         {
@@ -123,8 +136,7 @@ public class Policy extends PolicyHolder{
         }
     }
 
-    public void printPolicyDetails()
-    {
+    public void printPolicyDetails(){
         if(this.cancelled){
             System.out.println("This Policy is already cancelled.");
         }
@@ -134,10 +146,7 @@ public class Policy extends PolicyHolder{
                             + this.policy_cost + "\t "+ this.customer_id + "\t\t  " + this.policy_holder_id);
     }
 
-    public void setPolicyCost(double policyCost)
-    {
+    public void setPolicyCost(double policyCost){
         this.policy_cost = policyCost;
     }
-
-    
 }

@@ -5,8 +5,10 @@ public class Vehicle extends Policy{
 
     Scanner input = new Scanner(System.in);
 
-    final static String [] colorArr = {"red","orange","yellow","green","blue","indigo","violet"
-                                        ,"silver","white","black","pink","gray","gold"};
+    final static String [] colorArr = {"Red","Orange","Yellow","Green","Blue","Indigo","Violet"
+                                        ,"Silver","White","Black","Pink","Gray","Gold"};
+    final static String [] fuelTypeArr = {"Diesel","Electric","Petrol"};
+    final static String [] vehicleTypeArr = {"Sedan","Sports","SUV","Truck"};
 
     private String make;
     private String model;
@@ -25,21 +27,16 @@ public class Vehicle extends Policy{
         String model = input.nextLine();
 
         System.out.print("Purchased Year: ");
-        int modelYear = (int)Math.round(dataTypeValidator(modelYear = 0));
+        int modelYear = intValidator(modelYear = 0);
 
-        input.nextLine();
-        System.out.print("Type: ");
-        String type = input.nextLine();
+        String type = validateChoice(vehicleTypeArr,type = "","Vehicle type");
 
-        System.out.print("Fuel type: ");
-        String fuelType = input.nextLine();
+        String fuelType = validateChoice(fuelTypeArr,fuelType = "","Fuel type");
         
         System.out.print("Purchase Price: ");
-        double purchasePrice = dataTypeValidator(purchasePrice = 0);
+        double purchasePrice = doubleValidator(purchasePrice = 0);
 
-        input.nextLine();
-        System.out.print("Color: ");
-        String color = validateColor(color = "");
+        String color = validateChoice(colorArr,color = "","Color");
 
         this.make = make;
         this.model = model;
@@ -53,10 +50,7 @@ public class Vehicle extends Policy{
     public void saveVehicle(){
         try (
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-            ,"root", "admin")
-        
-            )
-            {
+                                                         ,"root", "admin")){
                 PreparedStatement statement = conn.prepareStatement("INSERT INTO vehicle (make,model,model_year,vehicle_type,fuel_type"
                                                                     + ",purchase_price,color,premium_charge,policy_id) VALUES (?,?,?,?,?,?,?,?,?)");
 
@@ -80,35 +74,19 @@ public class Vehicle extends Policy{
     public int getLatestPolicyID(){
         int lastPolicyId = 0;
 
-        try (Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas","root", "admin"))
-        {
+        try (Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
+                                                            ,"root", "admin")){
             PreparedStatement getPolicyHolderID = conn.prepareStatement("SELECT id FROM policy ORDER BY id DESC LIMIT 1");
             ResultSet queryRes = getPolicyHolderID.executeQuery(); 
 
             while(queryRes.next()){
                 lastPolicyId = queryRes.getInt("id");
             }
-        } catch (SQLException ex)
-        {
+        } catch (SQLException ex){
             System.out.println("Database error occured upon getting the latest policy id");
         }
 
         return lastPolicyId;
-    }
-
-    public  double dataTypeValidator(double num){
-        boolean invalid;
-        do{
-            try{
-                num = input.nextInt();
-                invalid = false;
-            } catch(InputMismatchException e){
-                input.nextLine();
-                System.out.println("Invalid Input");
-                invalid = true;
-            }
-        }while(invalid == true);
-        return num;
     }
 
     public double getVehiclePrice(){
@@ -127,38 +105,39 @@ public class Vehicle extends Policy{
        return this.premium_charge;
     }
 
-    public  String validateColor(String color){
-        Boolean colorMatch = false;
+    public String validateChoice(String [] strArr, String choiceInput, String fieldName){
+        Boolean choiceMatch = false;
+
         do{
-            System.out.println("Input 'color' if you want to see the supported vehicle colors");
+            System.out.println("Input '" + fieldName + "' if you want to see the supported vehicle "+fieldName);
+            System.out.println(fieldName + ": ");
+            choiceInput = input.nextLine();
 
-            color = input.nextLine();
-
-            
-
-            for(int index = 0; index < colorArr.length; index++){
-                if(color.equals(colorArr[index])){
-                    colorMatch = true;
+            for(int index = 0; index < strArr.length; index++){
+                if(choiceInput.toLowerCase().equals(strArr[index].toLowerCase())){
+                    choiceMatch = true;
                 }
             }
 
-            if(color.toLowerCase().equals("color")){
-                printVehicleColors();
+            if(choiceInput.toLowerCase().equals(fieldName.toLowerCase())){
+                printChoices(strArr, fieldName);
             }
-            else if(colorMatch == false){
-                System.out.println("No color matched. Please try again.");
+            else if(choiceMatch == false){
+                System.out.println("Input not matched. Please try again.");
             }
-
-        }while(!colorMatch);
+            
+        }while(!choiceMatch);
         
         return color;
     }
 
-    public void printVehicleColors(){
-        for(int index = 0; index < colorArr.length; index++){
-            System.out.print(colorArr[index] + "\t");
+    public void printChoices(String [] strArr, String field){
+
+        System.out.println("\n"+field.toUpperCase());
+        for(int index = 0; index < strArr.length; index++){
+            System.out.println(strArr[index]);
         }
-        
+        System.out.println();
     }
 
 }
