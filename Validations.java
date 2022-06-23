@@ -1,8 +1,12 @@
 import java.util.*;
+import java.text.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 public class Validations {
+
+    Calendar calendar = Calendar.getInstance();
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
     
     public Scanner input = new Scanner(System.in);
 
@@ -22,6 +26,7 @@ public class Validations {
         return minor;
     }
 
+    //return 
     public String idPadding(int id, int maxDigits, int claim){
         String stringId = "";
 
@@ -33,6 +38,7 @@ public class Validations {
         return stringId;
     }
 
+    //parse string type id to int type id
     public int parseIdStrtoInt(String idStr){
         int idStrIntVal = 0;
         Boolean invalid;
@@ -65,6 +71,7 @@ public class Validations {
         return idStrIntVal;
     }
 
+    //validate user input string date 
     public String validateDate(String dateLabel, String inputDate, Boolean forAgechecking){
         String dateFormat = "^[0-9]{4}-(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])$";
         Boolean invalidDate = true;
@@ -107,7 +114,14 @@ public class Validations {
         do{
             try{
                 num = input.nextDouble();
-                invalid = false;
+
+                if(num <= 0){
+                    System.out.println("Invalid Input");
+                    invalid = true;
+                } else {
+                    invalid = false;
+                }
+                
             } catch(InputMismatchException e){
                 input.nextLine();
                 System.out.println("Invalid Input");
@@ -123,7 +137,14 @@ public class Validations {
         do{
             try{
                 num = input.nextInt();
-                invalid = false;
+                
+                if(num <= 0){
+                    System.out.println("Invalid Input");
+                    invalid = true;
+                } else {
+                    invalid = false;
+                }
+                
             } catch(InputMismatchException e){
                 input.nextLine();
                 System.out.println("Invalid Input");
@@ -135,6 +156,36 @@ public class Validations {
 
     public void printSampleDateFormat(){
         System.out.println("Please input date in this format 'YYYY-MM-DD'");
+    }
+
+    //return current date
+    public String getCurrentDate(){
+
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day =  calendar.get(Calendar.DATE);
+        int year = calendar.get(Calendar.YEAR);
+        
+        calendar.set(year, month, day);
+        java.util.Date dateUtil = calendar.getTime();
+        java.sql.Date currentDate = new java.sql.Date(dateUtil.getTime());
+        String dateStr = currentDate.toString();
+
+        return dateStr;
+    }
+
+    public String validateEmptyString(String str){
+
+        Boolean isNotEmpty = false;
+
+        do{
+            str = input.nextLine();
+            if(!str.equals("")){
+                isNotEmpty = true;
+            } else {
+                System.out.println("Empty field");
+            }
+        }while(!isNotEmpty);
+        return str;
     }
 
 }

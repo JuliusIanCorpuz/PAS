@@ -6,7 +6,7 @@ public class Vehicle extends Policy{
     Scanner input = new Scanner(System.in);
 
     final static String [] colorArr = {"Red","Orange","Yellow","Green","Blue","Indigo","Violet"
-                                        ,"Silver","White","Black","Pink","Gray","Gold"};
+                                        ,"Silver","White","Black","Pink","Gray","Gold","Brown"};
     final static String [] fuelTypeArr = {"Diesel","Electric","Petrol"};
     final static String [] vehicleTypeArr = {"Sedan","Sports","SUV","Truck"};
 
@@ -110,7 +110,7 @@ public class Vehicle extends Policy{
 
         do{
             System.out.println("Input '" + fieldName + "' if you want to see the supported vehicle "+fieldName);
-            System.out.println(fieldName + ": ");
+            System.out.print(fieldName + ": ");
             choiceInput = input.nextLine();
 
             for(int index = 0; index < strArr.length; index++){

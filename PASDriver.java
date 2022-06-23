@@ -7,31 +7,27 @@ public class PASDriver{
     public static final StringBuilder res = new StringBuilder();
 
     public static void main(String[] args){
+        
+        int choice = 0;
 
         System.out.println("Automobile Insurance Policy and Claims Administration System\n");
 
-        int choice = 0;
-
         do{
-
             Customer customer = new Customer();
             Policy policy = new Policy();
-            int policyID = 0;
             
             choice = menu();
 
             switch(choice){ 
                 
                 case 1:
-                    addAccount(customer);
+                    addCustomerAccount(customer);
                     break;
                 case 2:
                     if(!customer.checkTableRow("customer")){
-                        int customerAccountID = 0;
-                        int policyHolderId = 0;
                         double policyPrice = 0;
 
-                        customerAccountID = customer.checkAccountIfExist(customerAccountID);
+                        customer.checkAccountIfExist();
                         System.out.println("Creating Policy");
                         policy.createPolicy();
                         PolicyHolder policyHolder = new PolicyHolder();
@@ -40,9 +36,8 @@ public class PASDriver{
                             System.out.println("Create a new Policy Holder");
                             policyHolder.createPolicyHolder();
                         } else {
-                            if(!policyHolder.checkPolicyHolderRow()){
-                                int policyHolderIDinput = 0;
-                                policyHolderId = policyHolder.getPolicyHolderbyID(policyHolderIDinput);
+                            if(!policyHolder.checkTableRow("policy_holder")){
+                                policyHolder.getPolicyHolderbyID();
                             } else {
                                 System.out.println("There are no policy Holder saved. Do you want to create new Policy Holder?");
                                 System.out.println("Input 'yes' to CREATE new, input any key to EXIT Policy Holder creation.");
@@ -71,12 +66,11 @@ public class PASDriver{
                         System.out.println("Note: Newly input Policy, Policy Holder and Vehicle/s will NOT be saved when you CANCEL buying the policy.");
                         String confirmStr = input.next();
                         if(confirmStr.toLowerCase().equals("yes")){
-                            if(policyHolderId == 0){
+                            if(policyHolder.getPolicyHolderID() == 0){
                                 policyHolder.savePolicyHolder();
                             }
-                            policyHolderId = policyHolderId == 0 ? policyHolder.getLatestPolicyHolder() : policyHolderId;
                             policy.setPolicyCost(policyPrice);
-                            policy.savePolicy(customerAccountID, policyHolderId);
+                            policy.savePolicy(customer.getCustomerId(), policyHolder.getPolicyHolderID());
                             saveVehicletoDB(vehiclesArr);
 
                             System.out.println("CONGRATULATIONS! YOU HAVE SUCCESSFULLY BOUGHT A POLICY.\n");
@@ -92,8 +86,8 @@ public class PASDriver{
                 case 3:
                     System.out.println("Cancel a Policy");
                     if(!policy.checkTableRow("policy")){
-                        policyID = policy.checkPolicyIfExists();
-                        policy.cancelPolicy(policyID);
+                        policy.checkPolicyIfExists();
+                        policy.cancelPolicy(policy.getPolicyId());
                     } else {
                         printEmptyTable("Policy");
                     }
@@ -103,11 +97,11 @@ public class PASDriver{
                     System.out.println("File a Claim");
                     if(!policy.checkTableRow("policy")){
 
-                        policyID = policy.checkPolicyIfExists();
+                        policy.checkPolicyIfExists();
 
-                        if(policyID > 0 ){
+                        if(policy.getPolicyId() > 0 ){
                             claim.createClaim();
-                            claim.fileClaim(policyID);
+                            claim.fileClaim(policy.getPolicyId());
                         }
                     } else {
                         printEmptyTable("Policy");
@@ -129,10 +123,8 @@ public class PASDriver{
                 case 6:
                     System.out.println("Search Policy\n");
                     if(!policy.checkTableRow("policy")){
-                        policyID = policy.checkPolicyIfExists();
-
-                        if(policyID > 0){
-                            policy.searchPolicyByID(policyID);
+                        policy.checkPolicyIfExists();
+                        if(policy.getPolicyId() > 0){
                             policy.printPolicyDetails();
                         }
 
@@ -152,7 +144,6 @@ public class PASDriver{
                     } else {
                         printEmptyTable("Claim");
                     }
-
                     break;
                 case 8:
                     System.out.println("Exiting Application ");
@@ -197,7 +188,7 @@ public class PASDriver{
         return menuChoice;
     }
 
-    public static void addAccount(Customer customer){
+    public static void addCustomerAccount(Customer customer){
             customer.createAccount();
                 
             System.out.println("Are you sure you want to save this customer?");
@@ -217,7 +208,7 @@ public class PASDriver{
     		
     		choice = input.next(); 
     		if(!choice.equals("new") && !choice.equals("link")) {
-    			System.out.println("Invalid inputChoice");
+    			System.out.println("Invalid input");
     		}
     	}while(!choice.equals("new") && !choice.equals("link"));
 
@@ -292,7 +283,14 @@ public class PASDriver{
         do{
             try{
                 num = input.nextInt();
-                invalid = false;
+                
+                if(num <= 0){
+                    System.out.println("Invalid Input");
+                    invalid = true;
+                } else {
+                    invalid = false;
+                }
+                
             } catch(InputMismatchException e){
                 input.nextLine();
                 System.out.println("Invalid Input");

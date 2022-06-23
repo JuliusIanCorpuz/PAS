@@ -5,19 +5,21 @@ public class Customer extends RatingEngine{
 
     public Scanner input = new Scanner(System.in);
 
+    private int account_id;
+    private String account_id_str;
     private String first_name;
     private String last_name;
     private String address;
 
     public void createAccount(){
         System.out.print("First Name: ");
-        String firstName = input.nextLine();
+        String firstName = validateEmptyString(firstName = "");
 
         System.out.print("Last Name: ");
-        String lastName = input.nextLine();
+        String lastName = validateEmptyString(lastName = "");
         
         System.out.print("Address: ");
-        String address = input.nextLine();
+        String address = validateEmptyString(address = "");
 
         this.first_name = firstName;
         this.last_name = lastName;
@@ -41,7 +43,7 @@ public class Customer extends RatingEngine{
             ResultSet queryRes = getLatestInsert.executeQuery(); 
             ResultSetMetaData rsmd = queryRes.getMetaData();
 
-            for (int counter = 1; counter <= rsmd.getColumnCount(); counter++ ) {
+            for (int counter = 1; counter <= rsmd.getColumnCount(); counter++ ){
                 String field = rsmd.getColumnName(counter);
                 System.out.print(field + "\t");
             }
@@ -58,10 +60,10 @@ public class Customer extends RatingEngine{
         }
     }
 
-
-    public int checkAccountIfExist(int accountNum){
-        int account_id = 0;
+    public void checkAccountIfExist(){
+        int accountNum = 0;
         Boolean isExist = false;
+
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
                                                          ,"root", "admin"); ){
@@ -78,7 +80,7 @@ public class Customer extends RatingEngine{
 
                 if(queryRes.next()){
                     System.out.println("Account successfully matched!\n");
-                     account_id = queryRes.getInt("id");
+                     this.account_id = queryRes.getInt("id");
                     isExist = true;
                 } else {
                     System.out.println("Account id/number = " +  accountNum +" doesn't exist");
@@ -88,8 +90,6 @@ public class Customer extends RatingEngine{
         } catch(SQLException ex){
             System.out.println("Database error upon checking customer id existence");
         }
-
-        return account_id;
     }
 
     public String searchCustomerByName(){
@@ -115,10 +115,11 @@ public class Customer extends RatingEngine{
         
                 if(queryRes.next()){
                     System.out.println("Account successfully matched!\n");
-                     idStr = idPadding(queryRes.getInt("id"),4,0);
-                     this.setFirstName(queryRes.getString("first_name"));
-                     this.setLastName(queryRes.getString("last_name"));
-                     this.setAddress(queryRes.getString("address"));
+                    this.account_id = queryRes.getInt("id");
+                    this.account_id_str = idPadding(queryRes.getInt("id"),4,0);
+                    this.setFirstName(queryRes.getString("first_name"));
+                    this.setLastName(queryRes.getString("last_name"));
+                    this.setAddress(queryRes.getString("address"));
                      
                     isExist = true;
                 } else {
@@ -133,8 +134,20 @@ public class Customer extends RatingEngine{
         return idStr;
     }
 
+    public int getCustomerID(){
+        return this.account_id;
+    }
+
+    public String getCustomerIDStr(){
+        return this.account_id_str;
+    }
+
     public String getFirstName(){
         return this.first_name;
+    }
+
+    public int getCustomerId(){
+        return this.account_id;
     }
 
     public String getLastName(){
@@ -161,4 +174,7 @@ public class Customer extends RatingEngine{
         System.out.println("ID\t First Name\t Last Name\t Address\t");
         System.out.println(idStr + "\t " + this.first_name + "\t " + this.last_name + "\t " + this.address);
     }
+
+    
+    
 }

@@ -7,10 +7,11 @@ public class Policy extends PolicyHolder{
 
     Calendar calendar = Calendar.getInstance();
 
+    private int policy_id;
     private java.sql.Date effective_date;
     private java.sql.Date expiration_date;
     private double policy_cost;
-    private String policy_id;
+    private String policy_id_str;
     private String customer_id;
     private int policy_holder_id;
     private boolean cancelled;
@@ -27,7 +28,7 @@ public class Policy extends PolicyHolder{
         System.out.println("Expiration date: " + this.expiration_date);
     }
 
-    public int checkPolicyIfExists(){
+    public void checkPolicyIfExists(){
         int policyIdInput = 0;
 
         try(
@@ -45,7 +46,14 @@ public class Policy extends PolicyHolder{
                 queryRes = getPolicy.executeQuery(); 
         
                 if(queryRes.next()){
-                    policyIdInput = queryRes.getInt("id");
+                    this.policy_id = queryRes.getInt("id");
+                    this.policy_id_str = idPadding(queryRes.getInt("id"), 6,0);
+                    this.effective_date = queryRes.getDate("effective_date");
+                    this.expiration_date = queryRes.getDate("expiration_date");
+                    this.policy_cost = queryRes.getDouble("policy_cost");
+                    this.customer_id = idPadding(queryRes.getInt("customer_id"), 4,0);
+                    this.policy_holder_id = queryRes.getInt("policy_holder_id");
+                    this.cancelled = queryRes.getBoolean("cancelled");
                     isExist = true;
                 } else {
                     System.out.println("Policy with ID = " +  policyIdInput +" doesn't exist");
@@ -55,35 +63,12 @@ public class Policy extends PolicyHolder{
         } catch(SQLException ex){
             System.out.println("Database error occured upon checking policy holder existence");
         }
-
-        return policyIdInput; 
-    }
-
-    public String checkPolicyStatus(int policyID){
-        
-        String policyStatus = "";
-
-        try(
-            Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin")){
-
-            PreparedStatement getPolicyStatus = conn.prepareStatement("SELECT cancelled FROM policy where id = " + policyID);
-            ResultSet queryRes = getPolicyStatus.executeQuery(); 
-
-            
-
-        } catch (SQLException ex){
-            System.out.println("Database Error occur upon saving the policy! " + ex);
-        }
-
-        return policyStatus;
     }
 
     public void cancelPolicy(int policyID){
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin"))
-        {
+                                                         ,"root", "admin")){
 
             PreparedStatement updatePolicy = conn.prepareStatement("UPDATE policy set cancelled = 1 where id = " + policyID);
             updatePolicy.executeUpdate();
@@ -115,38 +100,22 @@ public class Policy extends PolicyHolder{
         }
     }
 
-    public void searchPolicyByID(int policyID){
-        try(Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-            ,"root", "admin"))
-        {
-            PreparedStatement getPolicy = conn.prepareStatement("SELECT * FROM policy where id = " + policyID);
-            ResultSet queryRes = getPolicy.executeQuery(); 
-            if(queryRes.next()){
-                this.policy_id = idPadding(queryRes.getInt("id"), 6,0);
-                this.effective_date = queryRes.getDate("effective_date");
-                this.expiration_date = queryRes.getDate("expiration_date");
-                this.policy_cost = queryRes.getDouble("policy_cost");
-                this.customer_id = idPadding(queryRes.getInt("customer_id"), 4,0);
-                this.policy_holder_id = queryRes.getInt("policy_holder_id");
-                this.cancelled = queryRes.getBoolean("cancelled");
-            }    
-
-        }catch(SQLException ex){
-            System.out.println("Database error occured upon searching policy by ID");
-        }
-    }
-
     public void printPolicyDetails(){
         if(this.cancelled){
             System.out.println("This Policy is already cancelled.");
         }
         System.out.println(this.customer_id);
         System.out.println("ID\t Effective Date\t Expiration Date\t Policy Cost\t Customer ID\t Policy Holder ID");
-        System.out.println(this.policy_id + "\t " + this.effective_date + "\t " + this.expiration_date + "\t\t " 
+        System.out.println(this.policy_id_str + "\t " + this.effective_date + "\t " + this.expiration_date + "\t\t " 
                             + this.policy_cost + "\t "+ this.customer_id + "\t\t  " + this.policy_holder_id);
     }
 
     public void setPolicyCost(double policyCost){
         this.policy_cost = policyCost;
     }
+
+    public int getPolicyId(){
+        return this.policy_id;
+    }
+
 }

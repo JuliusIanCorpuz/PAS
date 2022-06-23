@@ -8,11 +8,13 @@ public class PolicyHolder extends Customer {
 
     SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
     
+    private int policy_holder_id;
     private java.sql.Date date_of_birth;
     private String drivers_license;
     private java.sql.Date drivers_license_issue_date;
     private int drivers_license_age;
 
+    //creating policy holder
     public void createPolicyHolder(){
         super.createAccount();
 
@@ -28,29 +30,8 @@ public class PolicyHolder extends Customer {
         this.drivers_license = driversLicense;
         this.drivers_license_issue_date = convertStringToDate(0,driversLicenseIssueDate);
     }
-
-    public Boolean checkPolicyHolderRow(){
-        Boolean emptyTable = true;
-        try(
-            Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin")){
-
-            PreparedStatement getCustomerAccount = conn.prepareStatement("SELECT COUNT(*) as recordsCount FROM policy_holder");
-            ResultSet queryRes = getCustomerAccount.executeQuery(); 
-
-            while(queryRes.next()){
-                int recordsCount = queryRes.getInt("recordsCount");
-                if(recordsCount > 0){
-                    emptyTable = false;
-                }
-            }
-        } catch (SQLException ex){
-            System.out.println("Database Error occured upon checking policy holder table count");
-        }
-
-        return emptyTable;
-    }
-
+    
+    //saving policy holder to database
     public void savePolicyHolder(){
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
@@ -75,28 +56,8 @@ public class PolicyHolder extends Customer {
     }
 
 
-    public int getLatestPolicyHolder(){
-        int policyHolderID = 0;
-        try(
-            Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin")){
-
-            PreparedStatement getPolicyHolderID = conn.prepareStatement("SELECT id FROM policy_holder ORDER BY id DESC LIMIT 1");
-            ResultSet queryRes = getPolicyHolderID.executeQuery(); 
-            
-            while(queryRes.next()){
-                 policyHolderID = queryRes.getInt("id");
-            }
-
-        } catch (SQLException ex){
-            System.out.println("Database Error occured upon getting the latest policy holder id");
-        }
-
-        return policyHolderID;
-    }
-
-    public int getPolicyHolderbyID(int policyHolderIDinput){
-        int policyHolderID = 0;
+    public void getPolicyHolderbyID(){
+        int policyHolderIDinput = 0;
 
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
@@ -115,7 +76,7 @@ public class PolicyHolder extends Customer {
         
                 if(queryRes.next()){
                     System.out.println("Account successfully matched!\n");
-                     policyHolderID = queryRes.getInt("id");
+                     this.policy_holder_id = queryRes.getInt("id");
                      super.setFirstName(queryRes.getString("first_name"));
                      super.setAddress(queryRes.getString("last_name"));
                      super.setLastName(queryRes.getString("address"));
@@ -132,8 +93,6 @@ public class PolicyHolder extends Customer {
         } catch(SQLException ex){
             System.out.println("Database error occured upon checking policy holder existence");
         }
-
-        return policyHolderID;
     }
 
 
@@ -175,18 +134,8 @@ public class PolicyHolder extends Customer {
         return outOfRange;
     }
     
-    public String getCurrentDate(){
-
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int day =  calendar.get(Calendar.DATE);
-        int year = calendar.get(Calendar.YEAR);
-        
-        calendar.set(year, month, day);
-        java.util.Date dateUtil = calendar.getTime();
-        java.sql.Date currentDate = new java.sql.Date(dateUtil.getTime());
-        String dateStr = currentDate.toString();
-
-        return dateStr;
+    public int getPolicyHolderID(){
+        return this.policy_holder_id;
     }
 
 }

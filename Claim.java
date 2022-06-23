@@ -2,25 +2,26 @@ import java.sql.*;
 
 public class Claim extends Policy{
 
-    private String claim_id;
+    private int claim_id;
     private java.sql.Date date_of_accident;
     private String accident_address;
     private String description;
     private String damage_to_vehicle;
     private double cost_of_repairs;
+    private String claim_id_str;
     private int policy_id;
 
     public void createClaim(){
         String dateOfAccident = validateDate("Date of Accident: ",dateOfAccident = "",false);
 
         System.out.print("Accident Address: ");
-        String accidentAddress = input.nextLine();
+        String accidentAddress = validateEmptyString(accidentAddress = "");
 
         System.out.print("Description: ");
-        String description = input.nextLine();
+        String description = validateEmptyString(description = "");
         
         System.out.print("Damage to vehicle: ");
-        String damageToVehicle = input.nextLine();
+        String damageToVehicle = validateEmptyString(damageToVehicle = "");
 
         System.out.print("Cost of repair: ");
         double costOfRepair = doubleValidator(costOfRepair = 0);
@@ -73,7 +74,8 @@ public class Claim extends Policy{
                 queryRes = getClaim.executeQuery(); 
                 
                 if(queryRes.next()){
-                    this.claim_id = idPadding(queryRes.getInt("id"),6,1);
+                    this.claim_id = queryRes.getInt("id");
+                    this.claim_id_str = idPadding(queryRes.getInt("id"),6,1);
                     this.date_of_accident = queryRes.getDate("date_of_accident");
                     this.accident_address = queryRes.getString("accident_address");
                     this.description = queryRes.getString("description");
@@ -93,13 +95,17 @@ public class Claim extends Policy{
     }
 
     public void printClaimDetails(){
-        System.out.println("\nClaim ID: " + this.claim_id + "\n"
+        System.out.println("\nClaim ID: " + this.claim_id_str + "\n"
                         + "Date of Accident: " + this.date_of_accident + "\n"
                         + "Accident Address: " + this.accident_address + "\n"
                         + "Description: " + this.description + "\n"
                         + "Damage to Vehicle: " + this.damage_to_vehicle + "\n"
                         + "Cost of repairs: " + this.cost_of_repairs + "\n"
                         + "Policy ID: " + this.policy_id + "\n");
+    }
+
+    public int getClaimId(){
+        return this.claim_id;
     }
 
 }
