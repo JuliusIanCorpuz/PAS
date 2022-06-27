@@ -19,12 +19,13 @@ public class Vehicle extends Policy{
     private String color;
     private double premium_charge;
 
+    //create vehicle object
     public void createVehicle(){
         System.out.print("Make: ");
-        String make = input.nextLine();
+        String make = validateEmptyString(make = "");
 
         System.out.print("Model: ");
-        String model = input.nextLine();
+        String model = validateEmptyString(model = "");
 
         System.out.print("Purchased Year: ");
         int modelYear = intValidator(modelYear = 0);
@@ -47,7 +48,8 @@ public class Vehicle extends Policy{
         this.color = color;
     }
 
-    public void saveVehicle(){
+    //insert vehicle object to database
+    public void saveVehicle(int policyId){
         try (
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
                                                          ,"root", "admin")){
@@ -62,7 +64,7 @@ public class Vehicle extends Policy{
                 statement.setDouble(6, this.purchase_price);
                 statement.setString(7, this.color);
                 statement.setDouble(8, this.premium_charge);
-                statement.setDouble(9, getLatestPolicyID());
+                statement.setDouble(9, policyId);
 
                 statement.execute();
 
@@ -71,40 +73,27 @@ public class Vehicle extends Policy{
             }
     }
 
-    public int getLatestPolicyID(){
-        int lastPolicyId = 0;
-
-        try (Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                            ,"root", "admin")){
-            PreparedStatement getPolicyHolderID = conn.prepareStatement("SELECT id FROM policy ORDER BY id DESC LIMIT 1");
-            ResultSet queryRes = getPolicyHolderID.executeQuery(); 
-
-            while(queryRes.next()){
-                lastPolicyId = queryRes.getInt("id");
-            }
-        } catch (SQLException ex){
-            System.out.println("Database error occured upon getting the latest policy id");
-        }
-
-        return lastPolicyId;
-    }
-
+    //return vehicle purchase price
     public double getVehiclePrice(){
         return this.purchase_price;
     }
 
+    //return vehicle model year
     public int getVehicleModelYear(){
         return this.model_year;
     }
 
+    //set vehicle premium charge
     public void setPremiumCharge(double premiumCharge){
         this.premium_charge = premiumCharge;
     }
 
+    //return vehicle premium charge
     public double getPremiumCharge(){
        return this.premium_charge;
     }
 
+    //validate user input string if within the given choices. If has match, return the user input
     public String validateChoice(String [] strArr, String choiceInput, String fieldName){
         Boolean choiceMatch = false;
 
@@ -128,9 +117,10 @@ public class Vehicle extends Policy{
             
         }while(!choiceMatch);
         
-        return color;
+        return choiceInput;
     }
 
+    //print choices for specified field
     public void printChoices(String [] strArr, String field){
 
         System.out.println("\n"+field.toUpperCase());

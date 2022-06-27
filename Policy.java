@@ -16,6 +16,7 @@ public class Policy extends PolicyHolder{
     private int policy_holder_id;
     private boolean cancelled;
 
+    //create policy object
     public void createPolicy(){
         String effectiveDateStr = validateDate("Effective Date: ",effectiveDateStr = "",false);  
 
@@ -28,6 +29,7 @@ public class Policy extends PolicyHolder{
         System.out.println("Expiration date: " + this.expiration_date);
     }
 
+    //check if user input policy id exists, if exists, allocate the retrieved data to the policy object
     public void checkPolicyIfExists(){
         int policyIdInput = 0;
 
@@ -55,6 +57,7 @@ public class Policy extends PolicyHolder{
                     this.policy_holder_id = queryRes.getInt("policy_holder_id");
                     this.cancelled = queryRes.getBoolean("cancelled");
                     isExist = true;
+                    
                 } else {
                     System.out.println("Policy with ID = " +  policyIdInput +" doesn't exist");
                 }
@@ -65,6 +68,23 @@ public class Policy extends PolicyHolder{
         }
     }
 
+    // public String checkPolicyStatus(){
+    //     String status = "";
+
+    //     if(this.cancelled){
+    //         status = "cancelled";
+    //         System.out.println("This Policy is already cancelled");
+    //     }
+    //     else if (){
+
+    //     }
+
+
+
+    //     return status;
+    // }
+
+    //prompt the user for policy id, then update the cancelled field to true
     public void cancelPolicy(int policyID){
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
@@ -79,6 +99,7 @@ public class Policy extends PolicyHolder{
         }
     }
 
+    //insert policy object to database
     public void savePolicy(int customerID, int policyHolderId){
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
@@ -100,6 +121,7 @@ public class Policy extends PolicyHolder{
         }
     }
 
+    //print policy details
     public void printPolicyDetails(){
         if(this.cancelled){
             System.out.println("This Policy is already cancelled.");
@@ -110,10 +132,17 @@ public class Policy extends PolicyHolder{
                             + this.policy_cost + "\t "+ this.customer_id + "\t\t  " + this.policy_holder_id);
     }
 
+    //set policy cost
     public void setPolicyCost(double policyCost){
         this.policy_cost = policyCost;
     }
 
+    //return policy cost
+    public double getPolicyCost(){
+        return this.policy_cost;
+    }
+
+    //return policy id
     public int getPolicyId(){
         return this.policy_id;
     }

@@ -14,14 +14,14 @@ public class PolicyHolder extends Customer {
     private java.sql.Date drivers_license_issue_date;
     private int drivers_license_age;
 
-    //creating policy holder
+    //creating policy holder object
     public void createPolicyHolder(){
         super.createAccount();
 
         String dateOfBirth = validateDate("Date of Birth: ",dateOfBirth = "",true);
 
         System.out.print("Drivers License: ");
-        String driversLicense = input.nextLine();
+        String driversLicense = validateEmptyString(driversLicense = "");
 
         String driversLicenseIssueDate = validateDate("Drivers License Issue Date: "
                                                         ,driversLicenseIssueDate = "",false);
@@ -55,7 +55,7 @@ public class PolicyHolder extends Customer {
         }
     }
 
-
+    //check if user input policy holder id exists. If exists, allocate the retrieved data to the policy holder object
     public void getPolicyHolderbyID(){
         int policyHolderIDinput = 0;
 
@@ -95,7 +95,7 @@ public class PolicyHolder extends Customer {
         }
     }
 
-
+    //return converted string type date to sql date
     public java.sql.Date convertStringToDate(int forExpDate, String date){   
         String [] dateArr = date.split("-");
         int year = Integer.parseInt(dateArr[0]);
@@ -110,19 +110,23 @@ public class PolicyHolder extends Customer {
         return sqlDate;
     }
 
+    //return license issue date
     public java.sql.Date getLicenseIssueDate(){
        return this.drivers_license_issue_date;
     }
 
+    //return drivers license age
     public int getDriversLicenseAge(){
        return this.drivers_license_age;
     }
 
+    //set drivers license age
     public void setDriversLicenseAge(){
         int driversLicenseIssueYear = Integer.parseInt(this.drivers_license_issue_date.toString().substring(0,4));
         this.drivers_license_age = currentYear - driversLicenseIssueYear;
     }
 
+    //check date if within the effectivity and expiration
     public Boolean checkDateRange(java.sql.Date dateVar){
         Boolean outOfRange = true;
         String currentDate = getCurrentDate().toString();
@@ -134,6 +138,7 @@ public class PolicyHolder extends Customer {
         return outOfRange;
     }
     
+    //return policy holder id
     public int getPolicyHolderID(){
         return this.policy_holder_id;
     }

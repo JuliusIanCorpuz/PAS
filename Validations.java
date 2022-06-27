@@ -10,6 +10,7 @@ public class Validations {
     
     public Scanner input = new Scanner(System.in);
 
+    //validate policy holder age
     public Boolean checkIfMinor(String dateStr){
 
         Boolean minor = true;
@@ -26,7 +27,7 @@ public class Validations {
         return minor;
     }
 
-    //return 
+    //return string type id with padding
     public String idPadding(int id, int maxDigits, int claim){
         String stringId = "";
 
@@ -42,7 +43,7 @@ public class Validations {
     public int parseIdStrtoInt(String idStr){
         int idStrIntVal = 0;
         Boolean invalid;
-
+        
         do{
             try{
                 idStr = input.nextLine();
@@ -154,6 +155,7 @@ public class Validations {
         return num;
     }
 
+    //print sample date format
     public void printSampleDateFormat(){
         System.out.println("Please input date in this format 'YYYY-MM-DD'");
     }
@@ -173,6 +175,7 @@ public class Validations {
         return dateStr;
     }
 
+    //validate empty string
     public String validateEmptyString(String str){
 
         Boolean isNotEmpty = false;

@@ -11,21 +11,25 @@ public class Customer extends RatingEngine{
     private String last_name;
     private String address;
 
+    //create an account/customer object
     public void createAccount(){
-        System.out.print("First Name: ");
-        String firstName = validateEmptyString(firstName = "");
+        System.out.println("asdasd"+this.db_username);
 
-        System.out.print("Last Name: ");
-        String lastName = validateEmptyString(lastName = "");
+        // System.out.print("First Name: ");
+        // String firstName = validateEmptyString(firstName = "");
+
+        // System.out.print("Last Name: ");
+        // String lastName = validateEmptyString(lastName = "");
         
-        System.out.print("Address: ");
-        String address = validateEmptyString(address = "");
+        // System.out.print("Address: ");
+        // String address = validateEmptyString(address = "");
 
-        this.first_name = firstName;
-        this.last_name = lastName;
-        this.address = address;
+        // this.first_name = firstName;
+        // this.last_name = lastName;
+        // this.address = address;
     }
 
+    //insert customer/account object to database
     public void saveCustomer(){
         try ( Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
                                                             ,"root", "admin"); 
@@ -60,6 +64,7 @@ public class Customer extends RatingEngine{
         }
     }
 
+    //prompt user for account/customer id to check if the account exists on the db
     public void checkAccountIfExist(){
         int accountNum = 0;
         Boolean isExist = false;
@@ -92,6 +97,9 @@ public class Customer extends RatingEngine{
         }
     }
 
+    /**Prompt the user for first name and last name and check if it has match from the Database. 
+     *If matched, load the customer object with the query result
+     */
     public String searchCustomerByName(){
         String idStr = "";
         try(
@@ -134,47 +142,50 @@ public class Customer extends RatingEngine{
         return idStr;
     }
 
+    //return int type customer/account id
     public int getCustomerID(){
         return this.account_id;
     }
 
+    //return string type customer/account id
     public String getCustomerIDStr(){
         return this.account_id_str;
     }
 
+    //return string type customer/account first name
     public String getFirstName(){
         return this.first_name;
     }
 
-    public int getCustomerId(){
-        return this.account_id;
-    }
-
+    //return string type customer/account last name
     public String getLastName(){
         return this.last_name;
     }
 
+    //return string type customer/account address
     public String getAddress(){
         return this.address;
     }
 
+    //set customer/account address
     public void setAddress(String address){
         this.address = address;
     }
 
+    //set customer/account first name
     public void setFirstName(String firstName){
         this.first_name = firstName;
     }
 
+    //set customer/account last name
     public void setLastName(String lastName){
         this.last_name = lastName;
     }
 
+    //print customer details
     public void printCustomerDetails(String idStr){
         System.out.println("ID\t First Name\t Last Name\t Address\t");
         System.out.println(idStr + "\t " + this.first_name + "\t " + this.last_name + "\t " + this.address);
     }
 
-    
-    
 }

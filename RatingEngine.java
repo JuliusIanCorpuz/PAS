@@ -6,6 +6,7 @@ public class RatingEngine extends CustomDBFunctions{
 
     final int currentYear = calendar.get(Calendar.YEAR);
 
+    //calculate vehicle premium base on the given parameters
     public double getVehiclePremium(double vehiclePurchase, int yearPurchased, int driversLicenseAge){
         
         double vehiclePremium = 0;
@@ -14,6 +15,7 @@ public class RatingEngine extends CustomDBFunctions{
         return vehiclePremium;
     }
 
+    //return vehicle price factor depending on vehicle age
     public double getVehiclePriceFactor(int yearPurchased){
         double vehiclePriceFactor = 0;
         int vehicleAge = currentYear - yearPurchased;

@@ -11,6 +11,7 @@ public class Claim extends Policy{
     private String claim_id_str;
     private int policy_id;
 
+    //create claim object
     public void createClaim(){
         String dateOfAccident = validateDate("Date of Accident: ",dateOfAccident = "",false);
 
@@ -33,21 +34,22 @@ public class Claim extends Policy{
         this.cost_of_repairs = costOfRepair;
     }
 
-    public void fileClaim(int policyID){
+    //save claim object to database
+    public void saveClaim(int policyID){
         try(Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
         ,"root", "admin")){
 
-            PreparedStatement fileClaim = conn.prepareStatement("INSERT INTO claim (date_of_accident,accident_address,description,damage_to_vehicle"
+            PreparedStatement saveClaim = conn.prepareStatement("INSERT INTO claim (date_of_accident,accident_address,description,damage_to_vehicle"
                                                                 +",repairs_cost,policy_id) VALUES (?,?,?,?,?,?)");
 
-            fileClaim.setDate(1, this.date_of_accident);
-            fileClaim.setString(2, this.accident_address);
-            fileClaim.setString(3, this.description);
-            fileClaim.setString(4, this.damage_to_vehicle);
-            fileClaim.setDouble(5, this.cost_of_repairs);
-            fileClaim.setInt(6, policyID);
+            saveClaim.setDate(1, this.date_of_accident);
+            saveClaim.setString(2, this.accident_address);
+            saveClaim.setString(3, this.description);
+            saveClaim.setString(4, this.damage_to_vehicle);
+            saveClaim.setDouble(5, this.cost_of_repairs);
+            saveClaim.setInt(6, policyID);
 
-            fileClaim.execute();
+            saveClaim.execute();
 
             System.out.println("You have successfully claimed the policy.");
 
@@ -56,6 +58,7 @@ public class Claim extends Policy{
         }
     }
 
+    //check if user input claim id exists. If exists, allocate the retrieved data to the claim object
     public void searchClaim(){
         try(
             Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
@@ -94,6 +97,7 @@ public class Claim extends Policy{
 
     }
 
+    //print claim object details
     public void printClaimDetails(){
         System.out.println("\nClaim ID: " + this.claim_id_str + "\n"
                         + "Date of Accident: " + this.date_of_accident + "\n"
@@ -104,6 +108,7 @@ public class Claim extends Policy{
                         + "Policy ID: " + this.policy_id + "\n");
     }
 
+    //return int type claim id
     public int getClaimId(){
         return this.claim_id;
     }
