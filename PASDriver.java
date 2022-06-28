@@ -19,8 +19,11 @@ public class PASDriver {
         int choice = 0;
 
         Database database = new Database();
+        CustomDBFunctions dbFunctions = new CustomDBFunctions();
 
         database.loadDBCredentials();
+        database.setupDBTables();
+        loadDBCredsToObject(dbFunctions,database);
 
         System.out.println("Automobile Insurance Policy and Claims Administration System\n");
 
@@ -29,6 +32,13 @@ public class PASDriver {
             loadDBCredsToObject(customer,database);
 
             Policy policy = new Policy();
+            loadDBCredsToObject(policy,database);
+            
+            PolicyHolder policyHolder = new PolicyHolder();
+            loadDBCredsToObject(policyHolder,database);
+
+            Claim claim = new Claim();
+            loadDBCredsToObject(claim,database);
 
             choice = menu();
 
@@ -44,7 +54,6 @@ public class PASDriver {
                         customer.checkAccountIfExist();
                         System.out.println("Creating Policy");
                         policy.createPolicy();
-                        PolicyHolder policyHolder = new PolicyHolder();
 
                         if (policyHolderChoice().equals("new")) {
                             System.out.println("Create a new Policy Holder");
@@ -72,7 +81,7 @@ public class PASDriver {
 
                         Vehicle[] vehiclesArr = new Vehicle[numOfVehicles];
 
-                        policy.setPolicyCost(addVehicle(vehiclesArr, policyHolder.getDriversLicenseAge()));
+                        policy.setPolicyCost(addVehicle(vehiclesArr, policyHolder.getDriversLicenseAge(), database));
                         System.out.println("Policy details are now COMPLETE. Are you sure you want to BUY this policy?");
                         System.out.println("Derived policy premium: " + policy.getPolicyCost());
                         System.out.println("Input 'yes' to BUY the policy, input any key to CANCEL the policy creation.");
@@ -100,21 +109,28 @@ public class PASDriver {
                     System.out.println("Cancel a Policy");
                     if (!policy.checkTableRows("policy")) {
                         policy.checkPolicyIfExists();
-                        policy.cancelPolicy(policy.getPolicyId());
+                        policy.checkPolicyStatus();
+                        if(!policy.getPolicyStatus().equals("cancelled") || 
+                            !policy.getPolicyStatus().equals("expired")){
+                            policy.printPolicyDetails();
+                            policy.cancelPolicy(policy.getPolicyId());
+                        }
                     } else {
                         printEmptyTable("Policy");
                     }
                     break;
                 case 4:
-                    Claim claim = new Claim();
                     System.out.println("File a Claim");
                     if (!policy.checkTableRows("policy")) {
-
                         policy.checkPolicyIfExists();
-
+                        
                         if (policy.getPolicyId() > 0) {
-                            claim.createClaim();
-                            claim.saveClaim(policy.getPolicyId());
+                            policy.checkPolicyStatus();
+                            if(!policy.getPolicyStatus().equals("cancelled") || 
+                            !policy.getPolicyStatus().equals("expired")){
+                                claim.createClaim(policy.getPolicyEffectiveDate(),policy.getPolicyExpirationDate());
+                                claim.saveClaim(policy.getPolicyId());
+                            }
                         }
                     } else {
                         printEmptyTable("Policy");
@@ -123,10 +139,9 @@ public class PASDriver {
                 case 5:
                     System.out.println("Search Customer");
                     if (!customer.checkTableRows("customer")) {
-                        String customerIdStr = customer.searchCustomerByName();
-
-                        if (customerIdStr != "") {
-                            customer.printCustomerDetails(customerIdStr);
+                        customer.searchCustomerByName();
+                        if (!customer.getCustomerIDStr().equals("")) {
+                            customer.printCustomerDetails();
                         }
                     } else {
                         printEmptyTable("Customer");
@@ -146,7 +161,6 @@ public class PASDriver {
                     }
                     break;
                 case 7:
-                    claim = new Claim();
 
                     System.out.println("Search Claim\n");
 
@@ -233,11 +247,13 @@ public class PASDriver {
         return choice;
     }
 
-    public static double addVehicle(Vehicle[] vehiclesArr, int driversLicenceAge) {
+    //process adding vehicle objects inside the array
+    public static double addVehicle(Vehicle[] vehiclesArr, int driversLicenceAge, Database database) {
         double policyPrice = 0;
 
         for (int index = 0; index < vehiclesArr.length; index++) {
             vehiclesArr[index] = new Vehicle();
+            loadDBCredsToObject(vehiclesArr[index], database);
             System.out.println("Creating vehicle #" + (index + 1));
             vehiclesArr[index].createVehicle();
             vehiclesArr[index].setPremiumCharge(vehiclesArr[index].getVehiclePremium(
@@ -259,13 +275,14 @@ public class PASDriver {
         return policyPrice;
     }
 
+    //save each vehicle object in the array
     public static void saveVehicletoDB(Vehicle[] vehiclesArr, int policyId) {
         for (Vehicle vehicle : vehiclesArr) {
             vehicle.saveVehicle(policyId);
         }
     }
 
-    // generate progress
+    // generate progress in progress bar
     public static String progress(int pct) {
         res.delete(0, res.length());
         int numPounds = (pct + 9) / 10;
@@ -278,7 +295,7 @@ public class PASDriver {
         return res.toString();
     }
 
-    // print exit progress
+    // print exit progress bar
     public static void printProgressBar() {
         for (int counter = 0; counter <= 100; counter++) {
             try {
@@ -322,10 +339,9 @@ public class PASDriver {
         return num;
     }
 
-    public static void loadDBCredsToObject(Database childDB, Database database){
-        childDB.setDBUserName(database.getDBUsername());
-        childDB.setDBPassword(database.getDBPassword());
-        childDB.setDBSchemaName(database.getDBSchemaNAme());
+    public static void loadDBCredsToObject(Database childClass, Database database){
+        childClass.setDBUserName(database.getDBUsername());
+        childClass.setDBPassword(database.getDBPassword());
     }
 
 }

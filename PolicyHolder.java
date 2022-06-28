@@ -34,8 +34,8 @@ public class PolicyHolder extends Customer {
     //saving policy holder to database
     public void savePolicyHolder(){
         try(
-            Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin")){
+            Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword());
+            Statement stmt = conn.createStatement()){
 
             PreparedStatement savePolicyHolder = conn.prepareStatement("INSERT INTO policy_holder (first_name,last_name,date_of_birth,"
                                                                         + "address,drivers_license,drivers_license_issue_date)"
@@ -49,9 +49,17 @@ public class PolicyHolder extends Customer {
             savePolicyHolder.setDate(6, this.drivers_license_issue_date);
             
             savePolicyHolder.execute(); 
+
+            String getLatestPolicyHolderID = "SELECT id FROM policy_holder ORDER BY id DESC LIMIT 1";
+            ResultSet quereyRes = stmt.executeQuery(getLatestPolicyHolderID);
+
+            while(quereyRes.next()){
+                setPolicyHolderID(quereyRes.getInt("id"));
+            }
+
             
         } catch (SQLException ex){
-            System.out.println("Database error occured upon saving new policy holder");
+            System.out.println("Database error occured upon saving new policy holder" + ex);
         }
     }
 
@@ -60,8 +68,7 @@ public class PolicyHolder extends Customer {
         int policyHolderIDinput = 0;
 
         try(
-            Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin")){
+            Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword())){
 
             Boolean isExist = false;
             PreparedStatement getPolicyHolderAccount;
@@ -124,23 +131,40 @@ public class PolicyHolder extends Customer {
     public void setDriversLicenseAge(){
         int driversLicenseIssueYear = Integer.parseInt(this.drivers_license_issue_date.toString().substring(0,4));
         this.drivers_license_age = currentYear - driversLicenseIssueYear;
+        if(this.drivers_license_age <= 0){
+            this.drivers_license_age = 1;
+        }
     }
 
     //check date if within the effectivity and expiration
-    public Boolean checkDateRange(java.sql.Date dateVar){
-        Boolean outOfRange = true;
-        String currentDate = getCurrentDate().toString();
-        String dateVarString = dateVar.toString();
-        if (currentDate.compareTo(dateVarString) > 0){
-                
-            }
+    public String checkDateRange(java.sql.Date date1, java.sql.Date date2){
+        String status = "";
+        String date_1 = date1.toString();
+        String date_2 = date2.toString();
+        if(date_1.compareTo(date_2) > 0){
+            System.out.println(date_1+"after"+date_2);
+            status = "after";
+        }
+        else if(date_1.compareTo(date_2) < 0){
+            System.out.println(date_1+"before"+date_2);
+            status = "before";
+        }
+        else if(date_1.compareTo(date_2) == 0){
+            System.out.println(date_1+" equals to "+date_2);
+            status = "equals";
+        }
 
-        return outOfRange;
+        return status;
     }
     
     //return policy holder id
     public int getPolicyHolderID(){
         return this.policy_holder_id;
+    }
+
+    //set policy holder id
+    public void setPolicyHolderID(int id){
+         this.policy_holder_id = id;
     }
 
 }

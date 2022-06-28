@@ -27,7 +27,7 @@ public class Vehicle extends Policy{
         System.out.print("Model: ");
         String model = validateEmptyString(model = "");
 
-        System.out.print("Purchased Year: ");
+        System.out.print("Model Year: ");
         int modelYear = intValidator(modelYear = 0);
 
         String type = validateChoice(vehicleTypeArr,type = "","Vehicle type");
@@ -51,8 +51,7 @@ public class Vehicle extends Policy{
     //insert vehicle object to database
     public void saveVehicle(int policyId){
         try (
-            Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin")){
+            Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword())){
                 PreparedStatement statement = conn.prepareStatement("INSERT INTO vehicle (make,model,model_year,vehicle_type,fuel_type"
                                                                     + ",purchase_price,color,premium_charge,policy_id) VALUES (?,?,?,?,?,?,?,?,?)");
 
@@ -69,7 +68,7 @@ public class Vehicle extends Policy{
                 statement.execute();
 
             } catch (SQLException ex){
-                System.out.println("Database error occured upon saving vehicle");
+                System.out.println("Database error occured upon saving vehicle" + ex);
             }
     }
 

@@ -6,7 +6,7 @@ public class CustomDBFunctions extends Database {
     public Boolean checkTableRows(String tableName) {
         Boolean emptyTable = true;
         try (
-                Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pas", "root", "admin");) {
+                Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword());) {
             PreparedStatement getRows = conn.prepareStatement("SELECT COUNT(*) as recordsCount FROM " + tableName);
             ResultSet queryRes = getRows.executeQuery();
 

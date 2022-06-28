@@ -12,7 +12,7 @@ public class Claim extends Policy{
     private int policy_id;
 
     //create claim object
-    public void createClaim(){
+    public void createClaim(java.sql.Date policyEffectiveDate, java.sql.Date ExpirationDate){
         String dateOfAccident = validateDate("Date of Accident: ",dateOfAccident = "",false);
 
         System.out.print("Accident Address: ");
@@ -36,8 +36,7 @@ public class Claim extends Policy{
 
     //save claim object to database
     public void saveClaim(int policyID){
-        try(Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-        ,"root", "admin")){
+        try(Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword())){
 
             PreparedStatement saveClaim = conn.prepareStatement("INSERT INTO claim (date_of_accident,accident_address,description,damage_to_vehicle"
                                                                 +",repairs_cost,policy_id) VALUES (?,?,?,?,?,?)");
@@ -61,8 +60,7 @@ public class Claim extends Policy{
     //check if user input claim id exists. If exists, allocate the retrieved data to the claim object
     public void searchClaim(){
         try(
-            Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin"); )
+            Connection conn = DriverManager.getConnection( GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword()))
         {
             Boolean isExist = false;
             PreparedStatement getClaim;

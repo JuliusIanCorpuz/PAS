@@ -15,10 +15,20 @@ public class Policy extends PolicyHolder{
     private String customer_id;
     private int policy_holder_id;
     private boolean cancelled;
+    private String policy_status;
 
     //create policy object
     public void createPolicy(){
-        String effectiveDateStr = validateDate("Effective Date: ",effectiveDateStr = "",false);  
+         
+        Boolean outOfRange = false;
+
+        do{
+            String effectiveDateStr = validateDate("Effective Date: ",effectiveDateStr = "",false); 
+
+            if
+            
+        }while(outOfRange != false);
+
 
         java.sql.Date effectiveDate = convertStringToDate(0,effectiveDateStr);
         java.sql.Date expirationDate = convertStringToDate(1,effectiveDateStr);
@@ -34,8 +44,7 @@ public class Policy extends PolicyHolder{
         int policyIdInput = 0;
 
         try(
-            Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin")){
+            Connection conn = DriverManager.getConnection( GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword())){
             Boolean isExist = false;
             PreparedStatement getPolicy;
             ResultSet queryRes;
@@ -68,27 +77,26 @@ public class Policy extends PolicyHolder{
         }
     }
 
-    // public String checkPolicyStatus(){
-    //     String status = "";
+    public void checkPolicyStatus(){
+        String status = "";
+        String policyStatus = checkDateRange(getCurrentDate(),this.expiration_date);
+        if(this.cancelled){
+            status = "cancelled";
+            System.out.println("This Policy is already cancelled");
+        }
+        else if(policyStatus.equals("equal") || policyStatus.equals("after")){
+            System.out.println("This Policy is already expired.");
+            status = "expired";
+        }
 
-    //     if(this.cancelled){
-    //         status = "cancelled";
-    //         System.out.println("This Policy is already cancelled");
-    //     }
-    //     else if (){
+        this.policy_status = status;
 
-    //     }
-
-
-
-    //     return status;
-    // }
+    }
 
     //prompt the user for policy id, then update the cancelled field to true
     public void cancelPolicy(int policyID){
         try(
-            Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin")){
+            Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword())){
 
             PreparedStatement updatePolicy = conn.prepareStatement("UPDATE policy set cancelled = 1 where id = " + policyID);
             updatePolicy.executeUpdate();
@@ -102,8 +110,8 @@ public class Policy extends PolicyHolder{
     //insert policy object to database
     public void savePolicy(int customerID, int policyHolderId){
         try(
-            Connection conn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/pas"
-                                                         ,"root", "admin")
+            Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword());
+            Statement stmt = conn.createStatement()
         ){
             PreparedStatement savePolicyHolder = conn.prepareStatement("INSERT INTO policy (effective_date,expiration_date,"
                                                                         + "policy_cost,customer_id,policy_holder_id) VALUES (?,?,?,?,?)");
@@ -115,6 +123,13 @@ public class Policy extends PolicyHolder{
             savePolicyHolder.setInt(5, policyHolderId);
             
             savePolicyHolder.execute(); 
+
+            String getLatestPolicyID = "SELECT id FROM policy ORDER BY id DESC LIMIT 1";
+            ResultSet quereyRes = stmt.executeQuery(getLatestPolicyID);
+
+            while(quereyRes.next()){
+                setPolicyId(quereyRes.getInt("id"));
+            }
             
         } catch (SQLException ex){
             System.out.println("Database Error occur upon saving the policy! " + ex);
@@ -146,5 +161,24 @@ public class Policy extends PolicyHolder{
     public int getPolicyId(){
         return this.policy_id;
     }
+    
+    //set policy id
+    public void setPolicyId(int id){
+        this.policy_id = id;
+    }
+
+    public String getPolicyStatus(){
+        return this.policy_status;
+    }
+
+    //return policy effective date
+    public java.sql.Date getPolicyEffectiveDate(){
+        return this.effective_date;
+    } 
+
+    //return policy expiration date
+    public java.sql.Date getPolicyExpirationDate(){
+        return this.expiration_date;
+    } 
 
 }

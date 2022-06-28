@@ -91,7 +91,7 @@ public class Validations {
                         System.out.println("Policy Holder must be 17 years old or above.");
                     }
                 } else {
-                    System.out.println("Invalid input1");
+                    System.out.println("Invalid input");
                 }
             }while(invalidDate);
         } else {
@@ -101,7 +101,7 @@ public class Validations {
                 if(inputDate.matches(dateFormat)){
                     invalidDate = false;
                 } else {
-                    System.out.println("Invalid input2");
+                    System.out.println("Invalid input");
                 }
             }while(invalidDate);
         }
@@ -161,18 +161,17 @@ public class Validations {
     }
 
     //return current date
-    public String getCurrentDate(){
+    public java.sql.Date getCurrentDate(){
 
-        int month = calendar.get(Calendar.MONTH) + 1;
+        int month = calendar.get(Calendar.MONTH);
         int day =  calendar.get(Calendar.DATE);
         int year = calendar.get(Calendar.YEAR);
         
         calendar.set(year, month, day);
         java.util.Date dateUtil = calendar.getTime();
         java.sql.Date currentDate = new java.sql.Date(dateUtil.getTime());
-        String dateStr = currentDate.toString();
 
-        return dateStr;
+        return currentDate;
     }
 
     //validate empty string

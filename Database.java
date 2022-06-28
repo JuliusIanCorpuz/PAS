@@ -3,12 +3,12 @@ import java.util.*;
 
 public class Database extends Validations{
 
-    final protected String DB_URL_LOCALCHOST = "jdbc:mysql://localhost/";
-    final protected String DB_MYSQLPORT = "jdbc:mysql://localhost:3306/";
+    final private String DB_URL_LOCALCHOST = "jdbc:mysql://localhost/";
+    final private String DB_MYSQLPORT = "jdbc:mysql://localhost:3306/";
+    final private String db_schema_name = "policyandclaims";
 
-    protected String db_username = "";
-    protected String db_password = "";
-    protected String db_schema_name = "policyandclaims";
+    private String db_username = "";
+    private String db_password = "";
 
     Scanner input = new Scanner(System.in);
 
@@ -18,7 +18,7 @@ public class Database extends Validations{
         Boolean match = false;
 
         do {
-            System.out.println("Please Input your MySQL Connection Credentials to create the Database");
+            System.out.println("Please Input the correct MySQL Connection Credentials setup the Database");
 
             System.out.print("Input username: ");
             String dbUserName = input.nextLine();
@@ -36,7 +36,7 @@ public class Database extends Validations{
                     String databaseName = resultSet.getString(1);
                     if(!databaseName.toLowerCase().equals("policyandclaims")){
                         String createDBStr = "CREATE DATABASE IF NOT EXISTS " + this.db_schema_name;
-                        stmt.execute(createDBStr);
+                        stmt.executeUpdate(createDBStr);
                         break;
                     } 
                     
@@ -61,16 +61,11 @@ public class Database extends Validations{
         try (Connection conn = DriverManager.getConnection(DB_MYSQLPORT + db_schema_name, db_username, db_password);
                 Statement stmt = conn.createStatement()) {
 
-            System.out.println("Creating tables");
-
             String createCustomerTable = "CREATE TABLE IF NOT EXISTS `customer` ("
-                    + "`id` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT PRIMARY KEY,"
-                    + "`date_of_accident` date DEFAULT NULL,"
-                    + "`accident_address` varchar(45) DEFAULT NULL,"
-                    + "`description` varchar(45) DEFAULT NULL,"
-                    + "`damage_to_vehicle` varchar(45) DEFAULT NULL,"
-                    + "`repairs_cost` double DEFAULT NULL,"
-                    + "`policy_id` int DEFAULT NULL)";
+                    + "`id` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+                    + "`first_name` varchar(45) DEFAULT NULL,"
+                    + "`last_name` varchar(45) DEFAULT NULL,"
+                    + "`address` varchar(45) DEFAULT NULL)";
 
             stmt.executeUpdate(createCustomerTable);
 
@@ -87,9 +82,9 @@ public class Database extends Validations{
 
             String createPolicyHolderTable = "CREATE TABLE IF NOT EXISTS `policy_holder` ("
                     + "`id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+                    + "`first_name` varchar(45) DEFAULT NULL,"
                     + "`last_name` varchar(45) DEFAULT NULL,"
                     + "`date_of_birth` date DEFAULT NULL,"
-                    + "`policy_cost` double DEFAULT NULL,"
                     + "`address` varchar(45) DEFAULT NULL,"
                     + "`drivers_license` varchar(45) DEFAULT NULL,"
                     + "`drivers_license_issue_date` date DEFAULT NULL)";
@@ -121,13 +116,12 @@ public class Database extends Validations{
 
             stmt.executeUpdate(createClaimTable);
 
-            System.out.println("Tables successfully created.");
+            System.out.println("\nDatabase successfully setup.\n");
 
         } catch (SQLException ex) {
             System.out.println("Database error occur upon creating tables." + ex);
         }
         
-
     }
 
     public String getDBUsername(){
@@ -150,9 +144,8 @@ public class Database extends Validations{
         return this.db_schema_name;
     }
 
-    public void setDBSchemaName(String dbSchemaName){
-        this.db_schema_name = dbSchemaName;
+    public String GET_DB_MYSQLPORT(){
+        return this.DB_MYSQLPORT;
     }
     
-
 }
