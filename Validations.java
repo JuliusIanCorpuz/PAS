@@ -1,30 +1,46 @@
 import java.util.*;
-import java.text.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 public class Validations {
 
-    Calendar calendar = Calendar.getInstance();
-    SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+    final private Calendar calendar = Calendar.getInstance();
     
     public Scanner input = new Scanner(System.in);
 
     //validate policy holder age
-    public Boolean checkIfMinor(String dateStr){
+    public Boolean invalidAge(String dateStr, String birthDate, String dateUse){
 
-        Boolean minor = true;
+        Boolean invalidAge = true;
 
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateLD = LocalDate.parse(dateStr, dateFormat);
-        Period age = Period.between(dateLD, LocalDate.now());
-        if (age.getYears() < 17) {
-            minor =  true;
-        } else {
-            minor =  false;
+        LocalDate birthdDateLD = !birthDate.equals("") ? LocalDate.parse(birthDate, dateFormat) : null;
+        Period age = null;
+        if(dateUse.equals("age")){
+            age = Period.between(dateLD, LocalDate.now());
+            int ageYears = age.getYears();
+            if (ageYears <= 17) {
+                System.out.println("\nInvalid Input Date. Age must be 17 years or older to acquire Drivers Licensed. \n"); 
+                invalidAge =  true;
+            } else {
+                invalidAge =  false;
+            }
         }
 
-        return minor;
+        if(dateUse.equals("licenseAge")){
+            age = Period.between(birthdDateLD, dateLD);
+            int ageYears = age.getYears();
+            if (ageYears < 17) {
+                System.out.println("\nInvalid Input Date. Age must be 17 years or older to acquire Drivers Licensed. \n"); 
+                invalidAge =  true;
+            } else {
+                invalidAge =  false;
+            }
+        }
+        
+
+        return invalidAge;
     }
 
     //return string type id with padding
@@ -73,11 +89,11 @@ public class Validations {
     }
 
     //validate user input string date 
-    public String validateDate(String dateLabel, String inputDate, Boolean forAgechecking){
+    public String validateDate(String dateLabel, String inputDate, String birthDate, String dateUse){
         String dateFormat = "^[0-9]{4}-(1[0-2]|0[1-9])-(3[01]|[12][0-9]|0[1-9])$";
         Boolean invalidDate = true;
         
-        if(forAgechecking){
+        if(!dateUse.equals("")){
             do{
                 printSampleDateFormat();
                 System.out.print(dateLabel);
@@ -85,10 +101,10 @@ public class Validations {
                 inputDate = input.nextLine();
                 
                 if(inputDate.matches(dateFormat)){
-                    if(!checkIfMinor(inputDate)){
+                    if(!invalidAge(inputDate, birthDate,dateUse)){
                         invalidDate = false;
                     } else {
-                        System.out.println("Policy Holder must be 17 years old or above.");
+                        invalidDate = true;
                     }
                 } else {
                     System.out.println("Invalid input");

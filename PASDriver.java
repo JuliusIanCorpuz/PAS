@@ -82,6 +82,7 @@ public class PASDriver {
                         Vehicle[] vehiclesArr = new Vehicle[numOfVehicles];
 
                         policy.setPolicyCost(addVehicle(vehiclesArr, policyHolder.getDriversLicenseAge(), database));
+                        
                         System.out.println("Policy details are now COMPLETE. Are you sure you want to BUY this policy?");
                         System.out.println("Derived policy premium: " + policy.getPolicyCost());
                         System.out.println("Input 'yes' to BUY the policy, input any key to CANCEL the policy creation.");
@@ -91,7 +92,6 @@ public class PASDriver {
                             if (policyHolder.getPolicyHolderID() == 0) {
                                 policyHolder.savePolicyHolder();
                             }
-                            policy.setPolicyCost(policyPrice);
                             policy.savePolicy(customer.getCustomerID(), policyHolder.getPolicyHolderID());
                             saveVehicletoDB(vehiclesArr, policy.getPolicyId());
 
@@ -110,10 +110,18 @@ public class PASDriver {
                     if (!policy.checkTableRows("policy")) {
                         policy.checkPolicyIfExists();
                         policy.checkPolicyStatus();
-                        if(!policy.getPolicyStatus().equals("cancelled") || 
+                        if(!policy.getPolicyStatus().equals("cancelled") && 
                             !policy.getPolicyStatus().equals("expired")){
                             policy.printPolicyDetails();
-                            policy.cancelPolicy(policy.getPolicyId());
+                            System.out.println("\nAre you sure to cancel this policy?");
+                                System.out.println("Input 'yes' to cancel the policy, input any key to EXIT policy cancellation.");
+                                String confirmStr = input.next();
+                                if (confirmStr.equals("yes")) {
+                                    policy.cancelPolicy(policy.getPolicyId());
+                                } else {
+                                    System.out.println("\nPolicy cancellation ended.\n");
+                                    break;
+                                }
                         }
                     } else {
                         printEmptyTable("Policy");
@@ -152,8 +160,8 @@ public class PASDriver {
                     if (!policy.checkTableRows("policy")) {
                         policy.checkPolicyIfExists();
                         if (policy.getPolicyId() > 0) {
-                            // policy.checkPolicyStatus();
-                            // policy.printPolicyDetails();
+                            policy.checkPolicyStatus();
+                            policy.printPolicyDetails();
                         }
 
                     } else {
@@ -218,7 +226,7 @@ public class PASDriver {
     public static void addCustomerAccount(Customer customer) {
         customer.createAccount();
 
-        System.out.println("Are you sure you want to save this customer?");
+        System.out.println("\nAre you sure you want to save this customer?");
         System.out.println("Input 'yes' to save. Input any key to exit customer creation.");
         String confirmStr = input.next();
         if (confirmStr.equals("yes")) {
@@ -271,7 +279,7 @@ public class PASDriver {
                 index -= 1;
             }
         }
-
+        System.out.println("policyPrice"+policyPrice);
         return policyPrice;
     }
 

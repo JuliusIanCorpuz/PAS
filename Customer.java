@@ -13,6 +13,7 @@ public class Customer extends RatingEngine{
 
     //create an account/customer object
     public void createAccount(){
+        System.out.println("Creating New Customer");
 
         System.out.print("First Name: ");
         String firstName = validateEmptyString(firstName = "");
@@ -58,7 +59,7 @@ public class Customer extends RatingEngine{
                                             +queryRes.getString(4));  
             }  
         } catch(SQLException ex){
-            System.out.println("Database error occured upon saving new customer" + ex);
+            System.out.println("Database error occured upon saving new customer");
         }
     }
 
@@ -131,7 +132,7 @@ public class Customer extends RatingEngine{
             }while(!isExist);
 
         } catch(SQLException ex){
-            System.out.println("Database error occured upon searching customer"+ ex);
+            System.out.println("Database error occured upon searching customer");
         }
     }
 

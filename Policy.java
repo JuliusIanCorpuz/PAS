@@ -20,15 +20,15 @@ public class Policy extends PolicyHolder{
     //create policy object
     public void createPolicy(){
          
-        Boolean outOfRange = false;
+        String effectiveDateStr = "";
 
         do{
-            String effectiveDateStr = validateDate("Effective Date: ",effectiveDateStr = "",false); 
-
-            if
-            
-        }while(outOfRange != false);
-
+            effectiveDateStr = validateDate("Effective Date: ", effectiveDateStr,"",""); 
+            if(checkDateRange(null, getCurrentDate(), effectiveDateStr).equals("before")){
+                System.out.println("\nPlease use current or future Date for your Policy Effective Date.\n");
+            }
+        }while(checkDateRange(null, getCurrentDate(), effectiveDateStr).equals("before"));
+        
 
         java.sql.Date effectiveDate = convertStringToDate(0,effectiveDateStr);
         java.sql.Date expirationDate = convertStringToDate(1,effectiveDateStr);
@@ -68,7 +68,7 @@ public class Policy extends PolicyHolder{
                     isExist = true;
                     
                 } else {
-                    System.out.println("Policy with ID = " +  policyIdInput +" doesn't exist");
+                    System.out.println("\nPolicy with ID = " +  policyIdInput +" doesn't exist\n");
                 }
             }while(!isExist);
 
@@ -79,14 +79,14 @@ public class Policy extends PolicyHolder{
 
     public void checkPolicyStatus(){
         String status = "";
-        String policyStatus = checkDateRange(getCurrentDate(),this.expiration_date);
+        String policyStatus = checkDateRange(getCurrentDate(),this.expiration_date,"");
         if(this.cancelled){
             status = "cancelled";
-            System.out.println("This Policy is already cancelled");
+            System.out.println("\nThis Policy is already cancelled\n");
         }
         else if(policyStatus.equals("equal") || policyStatus.equals("after")){
-            System.out.println("This Policy is already expired.");
             status = "expired";
+            System.out.println("\nThis Policy is already expired.\n");
         }
 
         this.policy_status = status;
@@ -132,7 +132,7 @@ public class Policy extends PolicyHolder{
             }
             
         } catch (SQLException ex){
-            System.out.println("Database Error occur upon saving the policy! " + ex);
+            System.out.println("Database Error occur upon saving the policy! ");
         }
     }
 
@@ -141,10 +141,13 @@ public class Policy extends PolicyHolder{
         if(this.cancelled){
             System.out.println("This Policy is already cancelled.");
         }
-        System.out.println(this.customer_id);
-        System.out.println("ID\t Effective Date\t Expiration Date\t Policy Cost\t Customer ID\t Policy Holder ID");
-        System.out.println(this.policy_id_str + "\t " + this.effective_date + "\t " + this.expiration_date + "\t\t " 
-                            + this.policy_cost + "\t "+ this.customer_id + "\t\t  " + this.policy_holder_id);
+
+        System.out.println("ID: "+ this.policy_id_str + "\n"
+                            + "Effective Date: "+ this.effective_date +"\n"
+                            + "Expiration Date: "+ this.expiration_date + "\n"
+                            + "Policy Cost: "+ this.policy_cost + "\n"
+                            + "Customer ID: "+ this.customer_id + "\n"
+                            + "Policy Holder ID: "+ this.policy_holder_id + "\n");
     }
 
     //set policy cost

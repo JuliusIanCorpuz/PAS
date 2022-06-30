@@ -1,12 +1,9 @@
 import java.util.*;
 import java.sql.*;
-import java.text.*;
 
 public class PolicyHolder extends Customer {
     
-    Calendar calendar = Calendar.getInstance();
-
-    SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+    final private Calendar calendar = Calendar.getInstance();
     
     private int policy_holder_id;
     private java.sql.Date date_of_birth;
@@ -18,13 +15,12 @@ public class PolicyHolder extends Customer {
     public void createPolicyHolder(){
         super.createAccount();
 
-        String dateOfBirth = validateDate("Date of Birth: ",dateOfBirth = "",true);
+        String dateOfBirth = validateDate("Date of Birth: ",dateOfBirth = "","","age");
 
         System.out.print("Drivers License: ");
         String driversLicense = validateEmptyString(driversLicense = "");
-
-        String driversLicenseIssueDate = validateDate("Drivers License Issue Date: "
-                                                        ,driversLicenseIssueDate = "",false);
+        
+        String driversLicenseIssueDate = validateDate("Drivers License Issue Date: ",driversLicenseIssueDate = "", dateOfBirth,"licenseAge");
 
         this.date_of_birth = convertStringToDate(0,dateOfBirth);
         this.drivers_license = driversLicense;
@@ -59,7 +55,7 @@ public class PolicyHolder extends Customer {
 
             
         } catch (SQLException ex){
-            System.out.println("Database error occured upon saving new policy holder" + ex);
+            System.out.println("Database error occured upon saving new policy holder");
         }
     }
 
@@ -137,20 +133,18 @@ public class PolicyHolder extends Customer {
     }
 
     //check date if within the effectivity and expiration
-    public String checkDateRange(java.sql.Date date1, java.sql.Date date2){
+    public String checkDateRange(java.sql.Date date1, java.sql.Date date2, String strDate){
         String status = "";
-        String date_1 = date1.toString();
+        String date_1 = strDate.equals("") ?  date1.toString() : strDate ;
         String date_2 = date2.toString();
+
         if(date_1.compareTo(date_2) > 0){
-            System.out.println(date_1+"after"+date_2);
             status = "after";
         }
         else if(date_1.compareTo(date_2) < 0){
-            System.out.println(date_1+"before"+date_2);
             status = "before";
         }
         else if(date_1.compareTo(date_2) == 0){
-            System.out.println(date_1+" equals to "+date_2);
             status = "equals";
         }
 

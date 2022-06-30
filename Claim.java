@@ -12,8 +12,22 @@ public class Claim extends Policy{
     private int policy_id;
 
     //create claim object
-    public void createClaim(java.sql.Date policyEffectiveDate, java.sql.Date ExpirationDate){
-        String dateOfAccident = validateDate("Date of Accident: ",dateOfAccident = "",false);
+    public void createClaim(java.sql.Date policyEffectiveDate, java.sql.Date policyExpirationDate){
+
+        String dateOfAccident = "";
+
+        Boolean outOfRange = false;
+        do{
+            dateOfAccident = validateDate("Date of Accident: ", dateOfAccident,"","");
+
+            if(checkDateRange(null, policyEffectiveDate, dateOfAccident).equals("before")
+            || checkDateRange(null, policyEffectiveDate, dateOfAccident).equals("equals")
+            || checkDateRange(null, policyExpirationDate, dateOfAccident).equals("after")
+            || checkDateRange(null, policyExpirationDate, dateOfAccident).equals("before")){
+                System.out.println("\nDate is out of range.\nDate of Accident must be dated between\nPolicy Effective Date and Expiration Date.\n");
+                outOfRange = true;
+            }
+        }while(outOfRange != false);
 
         System.out.print("Accident Address: ");
         String accidentAddress = validateEmptyString(accidentAddress = "");
@@ -53,7 +67,7 @@ public class Claim extends Policy{
             System.out.println("You have successfully claimed the policy.");
 
         } catch(SQLException ex){
-            System.out.println("Database error occured upon filing a claim."+ex);
+            System.out.println("Database error occured upon filing a claim.");
         }
     }
 
@@ -90,7 +104,7 @@ public class Claim extends Policy{
             }while(!isExist);
 
         } catch(SQLException ex){
-            System.out.println("Database error occured upon searching a claim" + ex);
+            System.out.println("Database error occured upon searching a claim");
         }
 
     }

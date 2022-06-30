@@ -48,11 +48,10 @@ public class Database extends Validations{
                 match = true;
 
             } catch (SQLException e) {
-                System.out.println("Invalid username or password" + e);
+                System.out.println("Invalid username or password");
                 match = false;
             }
         } while (!match == true);
-
         
     }
 
@@ -119,7 +118,7 @@ public class Database extends Validations{
             System.out.println("\nDatabase successfully setup.\n");
 
         } catch (SQLException ex) {
-            System.out.println("Database error occur upon creating tables." + ex);
+            System.out.println("Database error occur upon creating tables.");
         }
         
     }
