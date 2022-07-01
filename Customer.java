@@ -13,7 +13,6 @@ public class Customer extends RatingEngine{
 
     //create an account/customer object
     public void createAccount(){
-        System.out.println("Creating New Customer");
 
         System.out.print("First Name: ");
         String firstName = validateEmptyString(firstName = "");
@@ -40,7 +39,7 @@ public class Customer extends RatingEngine{
             insertCustomer.setString(3, this.address);
 
             insertCustomer.execute();
-            System.out.println("Account successfully created!");
+            System.out.println("\nAccount successfully created!");
 
             PreparedStatement getLatestInsert = conn.prepareStatement("SELECT * FROM customer ORDER BY id DESC LIMIT 1");
             ResultSet queryRes = getLatestInsert.executeQuery(); 
@@ -56,7 +55,7 @@ public class Customer extends RatingEngine{
                 System.out.println(idPadding(queryRes.getInt(1),4,0)+"\t"
                                             +queryRes.getString(2)+"\t\t"
                                             +queryRes.getString(3)+"\t\t"
-                                            +queryRes.getString(4));  
+                                            +queryRes.getString(4) + "\n");  
             }  
         } catch(SQLException ex){
             System.out.println("Database error occured upon saving new customer");

@@ -45,18 +45,18 @@ public class PASDriver {
             switch (choice) {
 
                 case 1:
+                    System.out.println("\nCreating new Customer\n");
                     addCustomerAccount(customer);
                     break;
                 case 2:
                     if (!customer.checkTableRows("customer")) {
-                        double policyPrice = 0;
 
                         customer.checkAccountIfExist();
-                        System.out.println("Creating Policy");
+                        System.out.println("Creating Policy\n");
                         policy.createPolicy();
 
                         if (policyHolderChoice().equals("new")) {
-                            System.out.println("Create a new Policy Holder");
+                            System.out.println("\nCreate a New Policy Holder\n");
                             policyHolder.createPolicyHolder();
                         } else {
                             if (!policyHolder.checkTableRows("policy_holder")) {
@@ -65,7 +65,7 @@ public class PASDriver {
                                 System.out.println("There are no policy Holder saved. Do you want to create new Policy Holder?");
                                 System.out.println("Input 'yes' to CREATE new, input any key to EXIT Policy Holder creation.");
                                 String confirmStr = input.next();
-                                if (confirmStr.equals("yes")) {
+                                if (confirmStr.toLowerCase().equals("yes")) {
                                     policyHolder.createPolicyHolder();
                                 } else {
                                     System.out.println("Policy Holder creation cancelled.");
@@ -116,7 +116,7 @@ public class PASDriver {
                             System.out.println("\nAre you sure to cancel this policy?");
                                 System.out.println("Input 'yes' to cancel the policy, input any key to EXIT policy cancellation.");
                                 String confirmStr = input.next();
-                                if (confirmStr.equals("yes")) {
+                                if (confirmStr.toLowerCase().equals("yes")) {
                                     policy.cancelPolicy(policy.getPolicyId());
                                 } else {
                                     System.out.println("\nPolicy cancellation ended.\n");
@@ -134,7 +134,7 @@ public class PASDriver {
                         
                         if (policy.getPolicyId() > 0) {
                             policy.checkPolicyStatus();
-                            if(!policy.getPolicyStatus().equals("cancelled") || 
+                            if(!policy.getPolicyStatus().equals("cancelled") &&
                             !policy.getPolicyStatus().equals("expired")){
                                 claim.createClaim(policy.getPolicyEffectiveDate(),policy.getPolicyExpirationDate());
                                 claim.saveClaim(policy.getPolicyId());
@@ -229,10 +229,10 @@ public class PASDriver {
         System.out.println("\nAre you sure you want to save this customer?");
         System.out.println("Input 'yes' to save. Input any key to exit customer creation.");
         String confirmStr = input.next();
-        if (confirmStr.equals("yes")) {
+        if (confirmStr.toLowerCase().equals("yes")) {
             customer.saveCustomer();
         } else {
-            System.out.println("Customer Account creation cancelled.");
+            System.out.println("\nCustomer Account creation cancelled.\n");
         }
     }
 
@@ -247,10 +247,10 @@ public class PASDriver {
                     "\nInput 'new' to create new Policy Holder. Input 'link' to link existing Policy Holder your policy. ");
 
             choice = input.next();
-            if (!choice.equals("new") && !choice.equals("link")) {
+            if (!choice.toLowerCase().equals("new") && !choice.toLowerCase().equals("link")) {
                 System.out.println("Invalid input");
             }
-        } while (!choice.equals("new") && !choice.equals("link"));
+        } while (!choice.toLowerCase().equals("new") && !choice.toLowerCase().equals("link"));
 
         return choice;
     }
@@ -267,7 +267,7 @@ public class PASDriver {
             vehiclesArr[index].setPremiumCharge(vehiclesArr[index].getVehiclePremium(
                                                 vehiclesArr[index].getVehiclePrice(), vehiclesArr[index].getVehicleModelYear()
                                                 , driversLicenceAge));
-            System.out.println("Vehicle premium cost:" + vehiclesArr[index].getPremiumCharge());
+            System.out.println("Vehicle premium cost: $" + vehiclesArr[index].getPremiumCharge());
             System.out.println("Are you sure you want to add and save this to your Policy?");
             System.out.println("Input 'yes' to add and save. Input any key to re-input the vehicle.");
             policyPrice += vehiclesArr[index].getPremiumCharge();
@@ -279,7 +279,7 @@ public class PASDriver {
                 index -= 1;
             }
         }
-        System.out.println("policyPrice"+policyPrice);
+
         return policyPrice;
     }
 
@@ -347,6 +347,7 @@ public class PASDriver {
         return num;
     }
 
+    //set dbcredential to child class
     public static void loadDBCredsToObject(Database childClass, Database database){
         childClass.setDBUserName(database.getDBUsername());
         childClass.setDBPassword(database.getDBPassword());

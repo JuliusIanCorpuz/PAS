@@ -1,11 +1,17 @@
 import java.sql.*;
+import java.util.*;
 
 public class Vehicle extends Policy {
 
-    final static String[] colorArr = { "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet", "Silver",
+    final private Calendar calendar = Calendar.getInstance();
+
+    final String[] colorArr = { "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet", "Silver",
             "White", "Black", "Pink", "Gray", "Gold", "Brown" };
-    final static String[] fuelTypeArr = { "Diesel", "Electric", "Petrol" };
-    final static String[] vehicleTypeArr = { "Sedan", "Sports", "SUV", "Truck" };
+    final String[] fuelTypeArr = { "Diesel", "Electric", "Petrol" };
+    final String[] vehicleTypeArr = { "Sedan", "Sports", "SUV", "Truck" };
+
+    final private int year = calendar.get(Calendar.YEAR);
+
 
     private String make;
     private String model;
@@ -24,8 +30,18 @@ public class Vehicle extends Policy {
         System.out.print("Model: ");
         String model = validateEmptyString(model = "");
 
-        System.out.print("Model Year: ");
-        int modelYear = intValidator(modelYear = 0);
+        int modelYear = 0;
+
+        Boolean outOfRange = true;
+        do{
+            System.out.print("Model Year: ");
+            modelYear = intValidator(modelYear);
+            if((modelYear < 1762) || (modelYear > (year + 10))){
+                System.out.println("Model Year is out of range.");
+            } else {
+                outOfRange = false;
+            }
+        }while(outOfRange != false);
 
         String type = validateChoice(vehicleTypeArr, type = "", "Vehicle type");
 

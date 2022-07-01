@@ -4,7 +4,6 @@ import java.sql.*;
 public class PolicyHolder extends Customer {
     
     final private Calendar calendar = Calendar.getInstance();
-    
     private int policy_holder_id;
     private java.sql.Date date_of_birth;
     private String drivers_license;
@@ -20,7 +19,21 @@ public class PolicyHolder extends Customer {
         System.out.print("Drivers License: ");
         String driversLicense = validateEmptyString(driversLicense = "");
         
-        String driversLicenseIssueDate = validateDate("Drivers License Issue Date: ",driversLicenseIssueDate = "", dateOfBirth,"licenseAge");
+        String driversLicenseIssueDate = "";
+
+        Boolean outOfRange = true;
+        do{
+            
+            driversLicenseIssueDate = validateDate("Drivers License Issue Date: ",driversLicenseIssueDate, dateOfBirth,"licenseAge");
+            
+            if(checkDateRange(null, getCurrentDate(), driversLicenseIssueDate).equals("after")){
+                System.out.println(checkDateRange(null, getCurrentDate(), driversLicenseIssueDate).equals("after"));
+                System.out.println("Date out of range.");
+            }else{
+                outOfRange = false;
+            }
+        }while(outOfRange != false);
+         
 
         this.date_of_birth = convertStringToDate(0,dateOfBirth);
         this.drivers_license = driversLicense;
@@ -136,7 +149,9 @@ public class PolicyHolder extends Customer {
     public String checkDateRange(java.sql.Date date1, java.sql.Date date2, String strDate){
         String status = "";
         String date_1 = strDate.equals("") ?  date1.toString() : strDate ;
+        System.out.println("date_1"+date_1);
         String date_2 = date2.toString();
+        System.out.println("date_2"+date_2);
 
         if(date_1.compareTo(date_2) > 0){
             status = "after";

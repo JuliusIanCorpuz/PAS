@@ -22,6 +22,7 @@ public class Policy extends PolicyHolder{
          
         String effectiveDateStr = "";
 
+        printSampleDateFormat();
         do{
             effectiveDateStr = validateDate("Effective Date: ", effectiveDateStr,"",""); 
             if(checkDateRange(null, getCurrentDate(), effectiveDateStr).equals("before")){
@@ -145,7 +146,7 @@ public class Policy extends PolicyHolder{
         System.out.println("ID: "+ this.policy_id_str + "\n"
                             + "Effective Date: "+ this.effective_date +"\n"
                             + "Expiration Date: "+ this.expiration_date + "\n"
-                            + "Policy Cost: "+ this.policy_cost + "\n"
+                            + "Policy Cost: $"+ this.policy_cost + "\n"
                             + "Customer ID: "+ this.customer_id + "\n"
                             + "Policy Holder ID: "+ this.policy_holder_id + "\n");
     }

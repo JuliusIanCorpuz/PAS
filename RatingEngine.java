@@ -11,7 +11,7 @@ public class RatingEngine extends CustomDBFunctions{
         
         double vehiclePremium = 0;
         vehiclePremium = (vehiclePurchase * getVehiclePriceFactor(modelYear)) + ((vehiclePurchase/100)/driversLicenseAge);
-        
+        vehiclePremium = Math.round(vehiclePremium * 100.0) / 100.0;
         return vehiclePremium;
     }
 

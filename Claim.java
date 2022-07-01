@@ -15,17 +15,20 @@ public class Claim extends Policy{
     public void createClaim(java.sql.Date policyEffectiveDate, java.sql.Date policyExpirationDate){
 
         String dateOfAccident = "";
-
-        Boolean outOfRange = false;
+        printSampleDateFormat();
+        
+        Boolean outOfRange = true;
         do{
             dateOfAccident = validateDate("Date of Accident: ", dateOfAccident,"","");
 
             if(checkDateRange(null, policyEffectiveDate, dateOfAccident).equals("before")
-            || checkDateRange(null, policyEffectiveDate, dateOfAccident).equals("equals")
+            || checkDateRange(null, policyExpirationDate, dateOfAccident).equals("equals")
             || checkDateRange(null, policyExpirationDate, dateOfAccident).equals("after")
             || checkDateRange(null, policyExpirationDate, dateOfAccident).equals("before")){
                 System.out.println("\nDate is out of range.\nDate of Accident must be dated between\nPolicy Effective Date and Expiration Date.\n");
                 outOfRange = true;
+            } else {
+                outOfRange = false;
             }
         }while(outOfRange != false);
 
