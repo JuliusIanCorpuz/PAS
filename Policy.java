@@ -78,6 +78,7 @@ public class Policy extends PolicyHolder{
         }
     }
 
+    //check policy status
     public void checkPolicyStatus(){
         String status = "";
         String policyStatus = checkDateRange(getCurrentDate(),this.expiration_date,"");
@@ -126,10 +127,10 @@ public class Policy extends PolicyHolder{
             savePolicyHolder.execute(); 
 
             String getLatestPolicyID = "SELECT id FROM policy ORDER BY id DESC LIMIT 1";
-            ResultSet quereyRes = stmt.executeQuery(getLatestPolicyID);
+            ResultSet queryRes = stmt.executeQuery(getLatestPolicyID);
 
-            while(quereyRes.next()){
-                setPolicyId(quereyRes.getInt("id"));
+            while(queryRes.next()){
+                setPolicyId(queryRes.getInt("id"));
             }
             
         } catch (SQLException ex){
@@ -171,6 +172,17 @@ public class Policy extends PolicyHolder{
         this.policy_id = id;
     }
 
+    //set policy id str
+    public void setPolicyIdStr(int id){
+        this.policy_id_str = idPadding(id, 6,0);
+    }
+
+    //return policy id str
+    public String getPolicyIdStr(){
+        return this.policy_id_str;
+    }
+
+    //return policyStatus
     public String getPolicyStatus(){
         return this.policy_status;
     }

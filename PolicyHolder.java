@@ -149,9 +149,7 @@ public class PolicyHolder extends Customer {
     public String checkDateRange(java.sql.Date date1, java.sql.Date date2, String strDate){
         String status = "";
         String date_1 = strDate.equals("") ?  date1.toString() : strDate ;
-        System.out.println("date_1"+date_1);
         String date_2 = date2.toString();
-        System.out.println("date_2"+date_2);
 
         if(date_1.compareTo(date_2) > 0){
             status = "after";
