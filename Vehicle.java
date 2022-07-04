@@ -33,7 +33,7 @@ public class Vehicle extends Policy {
         Boolean outOfRange = true;
         do{
             modelYear = intValidator("Model Year: ",modelYear);
-            if((modelYear < 1762) || (modelYear > year)){
+            if((modelYear < 1888) || (modelYear > year)){
                 System.out.println("Model Year is out of range.");
             } else {
                 outOfRange = false;
@@ -46,7 +46,7 @@ public class Vehicle extends Policy {
         String fuelType = validateChoice(fuelTypeArr, fuelType = "", "Fuel type");
 
         double purchasePrice = doubleValidator("Purchase Price ($USD): ",purchasePrice = 0);
-        
+
         input.nextLine();
         String color = validateChoice(colorArr, color = "", "Color");
 

@@ -214,9 +214,8 @@ public class PASDriver {
             System.out.println((index + 1) + ". " + choiceList[index]);
         }
 
-        System.out.print("\nPlease input the number of your desired transaction: ");
-
         do {
+            System.out.print("\nPlease input the number of your desired transaction: ");
             menuChoice = intValidator(menuChoice);
             if (menuChoice < 0 || menuChoice > 8) {
                 System.out.println("Input choice is out of range, please try again.");

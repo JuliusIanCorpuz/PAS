@@ -63,7 +63,7 @@ public class Database extends Validations{
                     + "`id` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT PRIMARY KEY,"
                     + "`first_name` varchar(45) DEFAULT NULL,"
                     + "`last_name` varchar(45) DEFAULT NULL,"
-                    + "`address` varchar(45) DEFAULT NULL)";
+                    + "`address` varchar(200) DEFAULT NULL)";
 
             stmt.executeUpdate(createCustomerTable);
 
@@ -83,7 +83,7 @@ public class Database extends Validations{
                     + "`first_name` varchar(45) DEFAULT NULL,"
                     + "`last_name` varchar(45) DEFAULT NULL,"
                     + "`date_of_birth` date DEFAULT NULL,"
-                    + "`address` varchar(45) DEFAULT NULL,"
+                    + "`address` varchar(200) DEFAULT NULL,"
                     + "`drivers_license` varchar(45) DEFAULT NULL,"
                     + "`drivers_license_issue_date` date DEFAULT NULL)";
 
@@ -104,11 +104,11 @@ public class Database extends Validations{
             stmt.executeUpdate(createVehicleTable);
 
             String createClaimTable = "CREATE TABLE IF NOT EXISTS `claim` ("
-                    + "`id` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+                    + "`id` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT PRIMARY KEY,"
                     + "`date_of_accident` date DEFAULT NULL,"
-                    + "`accident_address` varchar(45) DEFAULT NULL,"
-                    + "`description` varchar(45) DEFAULT NULL,"
-                    + "`damage_to_vehicle` varchar(45) DEFAULT NULL,"
+                    + "`accident_address` varchar(200) DEFAULT NULL,"
+                    + "`description` varchar(200) DEFAULT NULL,"
+                    + "`damage_to_vehicle` varchar(200) DEFAULT NULL,"
                     + "`repairs_cost` double DEFAULT NULL,"
                     + "`policy_id` int DEFAULT NULL)";
 

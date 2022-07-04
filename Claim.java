@@ -17,7 +17,7 @@ public class Claim extends Policy{
         String dateOfAccident = "";
         
         printSampleDateFormat();
-        
+
         Boolean outOfRange = true;
         do{
             dateOfAccident = validateDate("Date of Accident: ", dateOfAccident,"","");
@@ -91,7 +91,7 @@ public class Claim extends Policy{
                 
                 if(queryRes.next()){
                     this.claim_id = queryRes.getInt("id");
-                    this.claim_id_str = idPadding(queryRes.getInt("id"),6,1);
+                    this.claim_id_str = idPadding(queryRes.getInt("id"),5,1);
                     this.date_of_accident = queryRes.getDate("date_of_accident");
                     this.accident_address = queryRes.getString("accident_address");
                     this.description = queryRes.getString("description");
@@ -118,7 +118,7 @@ public class Claim extends Policy{
                         + "Description: " + this.description + "\n"
                         + "Damage to Vehicle: " + this.damage_to_vehicle + "\n"
                         + "Cost of repairs: $" + this.cost_of_repairs + "\n"
-                        + "Policy ID: " + this.policy_id + "\n");
+                        + "Policy ID: " + idPadding(this.policy_id, 6, 0)  + "\n");
     }
 
     //return int type claim id
