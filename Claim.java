@@ -15,6 +15,7 @@ public class Claim extends Policy{
     public void createClaim(java.sql.Date policyEffectiveDate, java.sql.Date policyExpirationDate){
 
         String dateOfAccident = "";
+        
         printSampleDateFormat();
         
         Boolean outOfRange = true;
@@ -24,25 +25,22 @@ public class Claim extends Policy{
             if(checkDateRange(null, policyEffectiveDate, dateOfAccident).equals("before")
             || checkDateRange(null, policyExpirationDate, dateOfAccident).equals("equals")
             || checkDateRange(null, policyExpirationDate, dateOfAccident).equals("after")
-            || checkDateRange(null, policyExpirationDate, dateOfAccident).equals("before")){
-                System.out.println("\nDate is out of range.\nDate of Accident must be dated between\nPolicy Effective Date and Expiration Date.\n");
+            || checkDateRange(null, getCurrentDate(), dateOfAccident).equals("after")){
+                System.out.println("\nDate is out of range.\nDate of Accident must be dated between\nPolicy Effective Date and Expiration Date.\n" +
+                                    "\nAnd must not be a future date.");
                 outOfRange = true;
             } else {
                 outOfRange = false;
             }
         }while(outOfRange != false);
 
-        System.out.print("Accident Address: ");
-        String accidentAddress = validateEmptyString(accidentAddress = "");
+        String accidentAddress = validateEmptyString("Accident Address: ",accidentAddress = "");
 
-        System.out.print("Description: ");
-        String description = validateEmptyString(description = "");
+        String description = validateEmptyString("Description: ",description = "");
         
-        System.out.print("Damage to vehicle: ");
-        String damageToVehicle = validateEmptyString(damageToVehicle = "");
+        String damageToVehicle = validateEmptyString("Damage to vehicle: ", damageToVehicle = "");
 
-        System.out.print("Cost of repair: ");
-        double costOfRepair = doubleValidator(costOfRepair = 0);
+        double costOfRepair = doubleValidator("Cost of repair: ", costOfRepair = 0);
 
         this.date_of_accident = convertStringToDate(0,dateOfAccident);
         this.accident_address = accidentAddress;

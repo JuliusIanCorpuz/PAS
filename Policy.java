@@ -50,8 +50,7 @@ public class Policy extends PolicyHolder{
             ResultSet queryRes;
             
             do{
-                System.out.println("Please input an existing policy id: ");
-                policyIdInput = intValidator(policyIdInput = 0);
+                policyIdInput = intValidator("Please input an existing policy id: ",policyIdInput = 0);
 
                 getPolicy = conn.prepareStatement("SELECT * FROM policy where id = " + policyIdInput);
                 queryRes = getPolicy.executeQuery(); 
@@ -106,7 +105,7 @@ public class Policy extends PolicyHolder{
 
             PreparedStatement updatePolicy = conn.prepareStatement("UPDATE policy set cancelled = 1 where id = " + policyID);
             updatePolicy.executeUpdate();
-            System.out.println("You have cancelled the policy with id =" + policyID);
+            System.out.println("You have cancelled the policy with id = " + policyID);
 
         } catch(SQLException ex){
             System.out.println("Database error occured upon checking policy holder existence");
@@ -121,6 +120,9 @@ public class Policy extends PolicyHolder{
         ){
             PreparedStatement savePolicyHolder = conn.prepareStatement("INSERT INTO policy (effective_date,expiration_date,"
                                                                         + "policy_cost,customer_id,policy_holder_id) VALUES (?,?,?,?,?)");
+
+            setCustomerID(customerID);      
+            setPolicyHolderID(policyHolderId);                                  
                                                                         
             savePolicyHolder.setDate(1, this.effective_date);
             savePolicyHolder.setDate(2, this.expiration_date);
@@ -143,7 +145,7 @@ public class Policy extends PolicyHolder{
         }
     }
 
-    //print policy details
+    //print policy object details
     public void printPolicyDetails(){
 
         System.out.println("ID: "+ this.policy_id_str + "\n"
@@ -154,49 +156,65 @@ public class Policy extends PolicyHolder{
                             + "Policy Holder ID: "+ this.policy_holder_id + "\n");
     }
 
-    //set policy cost
+    //set policy object policy_cost
     public void setPolicyCost(double policyCost){
         this.policy_cost = policyCost;
     }
 
-    //return policy cost
+    //return policy object policy_cost
     public double getPolicyCost(){
         return this.policy_cost;
     }
 
-    //return policy id
+    //return policy object id
     public int getPolicyId(){
         return this.policy_id;
     }
     
-    //set policy id
+    //set policy object id
     public void setPolicyId(int id){
         this.policy_id = id;
     }
 
-    //set policy id str
+    //set policy object id str
     public void setPolicyIdStr(int id){
         this.policy_id_str = idPadding(id, 6,0);
     }
 
-    //return policy id str
+    //return policy object id_str
     public String getPolicyIdStr(){
         return this.policy_id_str;
     }
 
-    //return policyStatus
+    //return policy object policyStatus
     public String getPolicyStatus(){
         return this.policy_status;
     }
 
-    //return policy effective date
+    //return policy object effective date
     public java.sql.Date getPolicyEffectiveDate(){
         return this.effective_date;
     } 
 
-    //return policy expiration date
+    //return policy object expiration date
     public java.sql.Date getPolicyExpirationDate(){
         return this.expiration_date;
     } 
+
+    //set policy object policy_holder_id
+    public void setCustomerID(int id){
+        this.customer_id = idPadding(id, 4, 0);
+    }
+
+    //set policy object policy_holder_id
+    public void setPolicyHolderID(int id){
+        this.policy_holder_id = id;
+        setPolicyHolderIDStr(this.policy_holder_id);
+    }
+
+    //set policy object policy_holder_id_str
+    public void setPolicyHolderIDStr(int id){
+        this.policy_id_str = idPadding(id, 6, 0);
+    }
 
 }

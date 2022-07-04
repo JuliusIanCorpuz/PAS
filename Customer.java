@@ -11,14 +11,11 @@ public class Customer extends RatingEngine{
     //create an account/customer object
     public void createAccount(){
 
-        System.out.print("First Name: ");
-        String firstName = validateEmptyString(firstName = "");
+        String firstName = validateEmptyString("First Name: ", firstName = "");
 
-        System.out.print("Last Name: ");
-        String lastName = validateEmptyString(lastName = "");
+        String lastName = validateEmptyString("Last Name: ",lastName = "");
         
-        System.out.print("Address: ");
-        String address = validateEmptyString(address = "");
+        String address = validateEmptyString("Address: ",address = "");
 
         this.first_name = firstName;
         this.last_name = lastName;
@@ -71,8 +68,7 @@ public class Customer extends RatingEngine{
             ResultSet queryRes;
 
             do{
-                System.out.print("Please input an existing account number/id: ");
-                accountNum = intValidator(accountNum);
+                accountNum = intValidator("Please input an existing account number/id: ",accountNum);
 
                 getCustomerAccount = conn.prepareStatement("SELECT id FROM customer where id = " + accountNum);
                 queryRes = getCustomerAccount.executeQuery(); 
@@ -104,12 +100,10 @@ public class Customer extends RatingEngine{
             String lastName = "";
             do{
                 System.out.println("Please input an existing customer account");
-                System.out.print("First Name: ");
-                firstName = input.nextLine();
-                System.out.print("Last Name: ");
-                lastName = input.nextLine();
+                firstName = validateEmptyString("First Name: ", firstName = "");
+                lastName = validateEmptyString("Last Name: ",lastName = "");
 
-                getCustomerByName = conn.prepareStatement("SELECT * FROM customer WHERE first_name LIKE '%"
+                getCustomerByName = conn.prepareStatement("SELECT * FROM customer WHERE first_name = "
                                                             +firstName + "%' AND last_name LIKE '%"+lastName+"%' LIMIT 1");
                 queryRes = getCustomerByName.executeQuery(); 
         

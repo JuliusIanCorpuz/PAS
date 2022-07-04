@@ -276,6 +276,7 @@ public class PASDriver {
             System.out.println("Are you sure you want to add and save this to your Policy?");
             System.out.println("Input 'yes' to add and save. Input any key to re-input the vehicle.");
             policyPrice += vehiclesArr[index].getPremiumCharge();
+
             String confirmStr = input.next();
             if (confirmStr.toLowerCase().equals("yes")) {
                 System.out.println("Vehicle Saved!\n");

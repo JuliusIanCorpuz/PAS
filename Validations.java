@@ -160,10 +160,11 @@ public class Validations {
     }
     
     //validation double data input by the user
-    public double doubleValidator(double num){
+    public double doubleValidator(String label,double num){
         boolean invalid;
         do{
             try{
+                System.out.print(label);
                 num = input.nextDouble();
 
                 if(num <= 0){
@@ -183,10 +184,11 @@ public class Validations {
     }
 
     //validation int data input by the user
-    public int intValidator(int num){
+    public int intValidator(String label, int num){
         boolean invalid;
         do{
             try{
+                System.out.print(label);
                 num = input.nextInt();
                 
                 if(num <= 0){
@@ -225,11 +227,12 @@ public class Validations {
     }
 
     //validate empty string
-    public String validateEmptyString(String str){
+    public String validateEmptyString(String label, String str){
 
         Boolean isNotEmpty = false;
 
         do{
+            System.out.print(label);
             str = input.nextLine();
             if(!str.equals("")){
                 isNotEmpty = true;

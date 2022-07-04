@@ -15,8 +15,7 @@ public class PolicyHolder extends Customer {
 
         String dateOfBirth = validateDate("Date of Birth: ",dateOfBirth = "","","age");
 
-        System.out.print("Drivers License: ");
-        String driversLicense = validateEmptyString(driversLicense = "");
+        String driversLicense = validateEmptyString("Drivers License: ",driversLicense = "");
         
         String driversLicenseIssueDate = "";
 
@@ -83,8 +82,7 @@ public class PolicyHolder extends Customer {
             ResultSet queryRes;
             
             do{
-                System.out.println("Please input an existing account policy holder id: ");
-                policyHolderIDinput = intValidator(policyHolderIDinput);
+                policyHolderIDinput = intValidator("Please input an existing account policy holder id: ",policyHolderIDinput);
 
                 getPolicyHolderAccount = conn.prepareStatement("SELECT * FROM policy_holder where id = " + policyHolderIDinput);
                 queryRes = getPolicyHolderAccount.executeQuery(); 

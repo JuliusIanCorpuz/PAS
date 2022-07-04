@@ -24,18 +24,15 @@ public class Vehicle extends Policy {
 
     // create vehicle object
     public void createVehicle() {
-        System.out.print("Make: ");
-        String make = validateEmptyString(make = "");
+        String make = validateEmptyString("Make: ", make = "");
 
-        System.out.print("Model: ");
-        String model = validateEmptyString(model = "");
+        String model = validateEmptyString("Model: ",model = "");
 
         int modelYear = 0;
 
         Boolean outOfRange = true;
         do{
-            System.out.print("Model Year: ");
-            modelYear = intValidator(modelYear);
+            modelYear = intValidator("Model Year: ",modelYear);
             if((modelYear < 1762) || (modelYear > year)){
                 System.out.println("Model Year is out of range.");
             } else {
@@ -43,13 +40,14 @@ public class Vehicle extends Policy {
             }
         }while(outOfRange != false);
 
+        input.nextLine();
         String type = validateChoice(vehicleTypeArr, type = "", "Vehicle type");
 
         String fuelType = validateChoice(fuelTypeArr, fuelType = "", "Fuel type");
 
-        System.out.print("Purchase Price ($USD): ");
-        double purchasePrice = doubleValidator(purchasePrice = 0);
-
+        double purchasePrice = doubleValidator("Purchase Price ($USD): ",purchasePrice = 0);
+        
+        input.nextLine();
         String color = validateChoice(colorArr, color = "", "Color");
 
         this.make = make;
@@ -107,8 +105,8 @@ public class Vehicle extends Policy {
         return this.premium_charge;
     }
     
-    // validate user input string if within the given choices. If has match, return
-    // the user input
+    // Validate user input string if within the given choices. If has match, return
+    // the user input.
     public String validateChoice(String[] strArr, String choiceInput, String fieldName) {
         Boolean choiceMatch = false;
 
