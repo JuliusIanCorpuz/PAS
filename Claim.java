@@ -119,7 +119,7 @@ public class Claim extends Policy{
                         + "Accident Address: " + this.accident_address + "\n"
                         + "Description: " + this.description + "\n"
                         + "Damage to Vehicle: " + this.damage_to_vehicle + "\n"
-                        + "Cost of repairs: " + this.cost_of_repairs + "\n"
+                        + "Cost of repairs: $" + this.cost_of_repairs + "\n"
                         + "Policy ID: " + this.policy_id + "\n");
     }
 

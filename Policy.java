@@ -82,15 +82,17 @@ public class Policy extends PolicyHolder{
         String status = "";
         String expirationDate = checkDateRange(getCurrentDate(),this.expiration_date,"");
         String activeStatus = checkDateRange(getCurrentDate(),this.effective_date,"");
+
         if(this.cancelled){
             status = "cancelled";
             System.out.println("\nThis Policy is already cancelled\n");
         }
         else if(expirationDate.equals("equal") || expirationDate.equals("after")){
-            status = "expired";
-            System.out.println("\nThis Policy is already expired.\n");
+            System.out.println("\nPlease be advised that this Policy is already expired.\n");
         }
-        else if(activeStatus.equals("equal") || activeStatus.equals("after")){
+        else if(activeStatus.equals("before")){
+            System.out.println("\nPolicy is still inactive. This policy will be active on " + getPolicyEffectiveDate() + "\n");
+        } else {
             status = "active";
         }
         
@@ -128,11 +130,12 @@ public class Policy extends PolicyHolder{
             
             savePolicyHolder.execute(); 
 
-            String getLatestPolicyID = "SELECT id FROM policy ORDER BY id DESC LIMIT 1";
+            String getLatestPolicyID = "SELECT * FROM policy ORDER BY id DESC LIMIT 1";
             ResultSet queryRes = stmt.executeQuery(getLatestPolicyID);
 
             while(queryRes.next()){
                 setPolicyId(queryRes.getInt("id"));
+                setPolicyIdStr(queryRes.getInt("id"));
             }
             
         } catch (SQLException ex){
@@ -142,9 +145,6 @@ public class Policy extends PolicyHolder{
 
     //print policy details
     public void printPolicyDetails(){
-        if(this.cancelled){
-            System.out.println("This Policy is already cancelled.");
-        }
 
         System.out.println("ID: "+ this.policy_id_str + "\n"
                             + "Effective Date: "+ this.effective_date +"\n"

@@ -47,7 +47,7 @@ public class Vehicle extends Policy {
 
         String fuelType = validateChoice(fuelTypeArr, fuelType = "", "Fuel type");
 
-        System.out.print("Purchase Price: ");
+        System.out.print("Purchase Price ($USD): ");
         double purchasePrice = doubleValidator(purchasePrice = 0);
 
         String color = validateChoice(colorArr, color = "", "Color");

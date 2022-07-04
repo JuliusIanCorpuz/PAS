@@ -1,8 +1,9 @@
 /**
- * Java Course 2, Module 2
- * 
- * Automobile description
+ * Norima Course 4 - Java 102 - Part 2
+ * Java Developer Course Capstone Project
  *
+ * Automobile Insurance Policy and Claims Administration System
+ * 
  * @author Julius Ian Corpuz
  */
 
@@ -96,6 +97,7 @@ public class PASDriver {
                             saveVehicletoDB(vehiclesArr, policy.getPolicyId());
 
                             System.out.println("CONGRATULATIONS! YOU HAVE SUCCESSFULLY BOUGHT A POLICY.\n");
+                            policy.printPolicyDetails();
                         } else {
                             System.out.println("Transaction Cancelled.");
                             break;
@@ -135,12 +137,10 @@ public class PASDriver {
                         
                         if (policy.getPolicyId() > 0){
                             policy.checkPolicyStatus();
-                            if(policy.getPolicyStatus().equals("cancelled")){
-                                System.out.println("\nPolicy is already cancelled\n");
-                            }
-                            else if(!policy.getPolicyStatus().equals("active")){
-                                System.out.println("\nPolicy is still inactive. This policy will be active on " + policy.getPolicyEffectiveDate() + "\n");
-                            } else {
+                            if(!policy.getPolicyStatus().equals("cancelled") &&
+                                policy.getPolicyStatus().equals("active")){
+                                System.out.println("\nPolicy " + policy.getPolicyIdStr() + "\nEffective Date: " 
+                                                    + policy.getPolicyEffectiveDate() + "\nExpiration Date: " + policy.getPolicyExpirationDate() + "\n");
                                 claim.createClaim(policy.getPolicyEffectiveDate(),policy.getPolicyExpirationDate());
                                 claim.saveClaim(policy.getPolicyId());
                             }
