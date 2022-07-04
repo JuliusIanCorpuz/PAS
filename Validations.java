@@ -124,6 +124,40 @@ public class Validations {
 
         return inputDate;
     }
+
+     //check date if within the effectivity and expiration
+     public String checkDateRange(java.sql.Date date1, java.sql.Date date2, String strDate){
+        String status = "";
+        String date_1 = strDate.equals("") ?  date1.toString() : strDate ;
+        String date_2 = date2.toString();
+        
+        if(date_1.compareTo(date_2) > 0){
+            status = "after";
+        }
+        else if(date_1.compareTo(date_2) < 0){
+            status = "before";
+        }
+        else if(date_1.compareTo(date_2) == 0){
+            status = "equals";
+        }
+
+        return status;
+    }
+
+    //return converted string type date to sql date
+    public java.sql.Date convertStringToDate(int forExpDate, String date){   
+        String [] dateArr = date.split("-");
+        int year = Integer.parseInt(dateArr[0]);
+        int month = forExpDate == 1 ?  Integer.parseInt(dateArr[1]) + 5 : Integer.parseInt(dateArr[1]) - 1;
+        int day = Integer.parseInt(dateArr[2]);
+
+        calendar.set(year, month, day);
+
+        java.util.Date utilDate = calendar.getTime();
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+        return sqlDate;
+    }
     
     //validation double data input by the user
     public double doubleValidator(double num){

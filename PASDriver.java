@@ -129,13 +129,18 @@ public class PASDriver {
                     break;
                 case 4:
                     System.out.println("File a Claim");
-                    if (!policy.checkTableRows("policy")) {
+                    if(!policy.checkTableRows("policy")){
+
                         policy.checkPolicyIfExists();
                         
-                        if (policy.getPolicyId() > 0) {
+                        if (policy.getPolicyId() > 0){
                             policy.checkPolicyStatus();
-                            if(!policy.getPolicyStatus().equals("cancelled") &&
-                            !policy.getPolicyStatus().equals("expired")){
+                            if(policy.getPolicyStatus().equals("cancelled")){
+                                System.out.println("\nPolicy is already cancelled\n");
+                            }
+                            else if(!policy.getPolicyStatus().equals("active")){
+                                System.out.println("\nPolicy is still inactive. This policy will be active on " + policy.getPolicyEffectiveDate() + "\n");
+                            } else {
                                 claim.createClaim(policy.getPolicyEffectiveDate(),policy.getPolicyExpirationDate());
                                 claim.saveClaim(policy.getPolicyId());
                             }

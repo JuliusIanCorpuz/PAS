@@ -10,9 +10,8 @@ public class Database extends Validations{
     private String db_username = "";
     private String db_password = "";
 
-    Scanner input = new Scanner(System.in);
 
-
+    //load mysql connection credentials, then create database schema if not existing
     public void loadDBCredentials(){
 
         Boolean match = false;
@@ -55,6 +54,7 @@ public class Database extends Validations{
         
     }
 
+    //create database tables if not existing
     public void setupDBTables() {
 
         try (Connection conn = DriverManager.getConnection(DB_MYSQLPORT + db_schema_name, db_username, db_password);
@@ -123,26 +123,32 @@ public class Database extends Validations{
         
     }
 
+    //return db connection username
     public String getDBUsername(){
         return this.db_username;
     }
 
+    //return db connection password
     public String getDBPassword(){
         return this.db_password;
     }
 
+    //set db connection username
     public void setDBUserName(String dbUserName){
         this.db_username = dbUserName;
     }
 
+    //set db connection password
     public void setDBPassword(String dbPassword){
         this.db_password = dbPassword;
     }
 
+    //return db connection schema name
     public String getDBSchemaNAme(){
         return this.db_schema_name;
     }
 
+    //return mysql port
     public String GET_DB_MYSQLPORT(){
         return this.DB_MYSQLPORT;
     }

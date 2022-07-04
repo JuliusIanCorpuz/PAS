@@ -2,7 +2,7 @@ import java.sql.*;
 
 public class CustomDBFunctions extends Database {
 
-    // check if table is empty
+    // check if db table is empty
     public Boolean checkTableRows(String tableName) {
         Boolean emptyTable = true;
         try (

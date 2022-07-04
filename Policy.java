@@ -3,7 +3,6 @@ import java.sql.*;
 
 public class Policy extends PolicyHolder{
 
-    Scanner input = new Scanner(System.in);
 
     Calendar calendar = Calendar.getInstance();
 
@@ -81,18 +80,21 @@ public class Policy extends PolicyHolder{
     //check policy status
     public void checkPolicyStatus(){
         String status = "";
-        String policyStatus = checkDateRange(getCurrentDate(),this.expiration_date,"");
+        String expirationDate = checkDateRange(getCurrentDate(),this.expiration_date,"");
+        String activeStatus = checkDateRange(getCurrentDate(),this.effective_date,"");
         if(this.cancelled){
             status = "cancelled";
             System.out.println("\nThis Policy is already cancelled\n");
         }
-        else if(policyStatus.equals("equal") || policyStatus.equals("after")){
+        else if(expirationDate.equals("equal") || expirationDate.equals("after")){
             status = "expired";
             System.out.println("\nThis Policy is already expired.\n");
         }
-
+        else if(activeStatus.equals("equal") || activeStatus.equals("after")){
+            status = "active";
+        }
+        
         this.policy_status = status;
-
     }
 
     //prompt the user for policy id, then update the cancelled field to true

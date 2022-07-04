@@ -1,9 +1,6 @@
-import java.util.*;
 import java.sql.*;
 
 public class Customer extends RatingEngine{
-
-    public Scanner input = new Scanner(System.in);
 
     private int account_id;
     private String account_id_str;

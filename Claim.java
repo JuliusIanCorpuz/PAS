@@ -67,7 +67,7 @@ public class Claim extends Policy{
 
             saveClaim.execute();
 
-            System.out.println("You have successfully claimed the policy.");
+            System.out.println("You have successfully claimed your insurance.");
 
         } catch(SQLException ex){
             System.out.println("Database error occured upon filing a claim.");

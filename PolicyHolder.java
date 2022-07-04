@@ -3,7 +3,6 @@ import java.sql.*;
 
 public class PolicyHolder extends Customer {
     
-    final private Calendar calendar = Calendar.getInstance();
     private int policy_holder_id;
     private java.sql.Date date_of_birth;
     private String drivers_license;
@@ -111,19 +110,13 @@ public class PolicyHolder extends Customer {
         }
     }
 
-    //return converted string type date to sql date
-    public java.sql.Date convertStringToDate(int forExpDate, String date){   
-        String [] dateArr = date.split("-");
-        int year = Integer.parseInt(dateArr[0]);
-        int month = forExpDate == 1 ?  Integer.parseInt(dateArr[1]) + 5 : Integer.parseInt(dateArr[1]) - 1;
-        int day = Integer.parseInt(dateArr[2]);
-
-        calendar.set(year, month, day);
-
-        java.util.Date utilDate = calendar.getTime();
-        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-
-        return sqlDate;
+    //set drivers license age
+    public void setDriversLicenseAge(){
+        int driversLicenseIssueYear = Integer.parseInt(this.drivers_license_issue_date.toString().substring(0,4));
+        this.drivers_license_age = currentYear - driversLicenseIssueYear;
+        if(this.drivers_license_age <= 0){
+            this.drivers_license_age = 1;
+        }
     }
 
     //return license issue date
@@ -134,34 +127,6 @@ public class PolicyHolder extends Customer {
     //return drivers license age
     public int getDriversLicenseAge(){
        return this.drivers_license_age;
-    }
-
-    //set drivers license age
-    public void setDriversLicenseAge(){
-        int driversLicenseIssueYear = Integer.parseInt(this.drivers_license_issue_date.toString().substring(0,4));
-        this.drivers_license_age = currentYear - driversLicenseIssueYear;
-        if(this.drivers_license_age <= 0){
-            this.drivers_license_age = 1;
-        }
-    }
-
-    //check date if within the effectivity and expiration
-    public String checkDateRange(java.sql.Date date1, java.sql.Date date2, String strDate){
-        String status = "";
-        String date_1 = strDate.equals("") ?  date1.toString() : strDate ;
-        String date_2 = date2.toString();
-
-        if(date_1.compareTo(date_2) > 0){
-            status = "after";
-        }
-        else if(date_1.compareTo(date_2) < 0){
-            status = "before";
-        }
-        else if(date_1.compareTo(date_2) == 0){
-            status = "equals";
-        }
-
-        return status;
     }
     
     //return policy holder id

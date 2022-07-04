@@ -36,7 +36,7 @@ public class Vehicle extends Policy {
         do{
             System.out.print("Model Year: ");
             modelYear = intValidator(modelYear);
-            if((modelYear < 1762) || (modelYear > (year + 10))){
+            if((modelYear < 1762) || (modelYear > year)){
                 System.out.println("Model Year is out of range.");
             } else {
                 outOfRange = false;
@@ -106,7 +106,7 @@ public class Vehicle extends Policy {
     public double getPremiumCharge() {
         return this.premium_charge;
     }
-
+    
     // validate user input string if within the given choices. If has match, return
     // the user input
     public String validateChoice(String[] strArr, String choiceInput, String fieldName) {
