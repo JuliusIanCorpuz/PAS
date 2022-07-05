@@ -53,7 +53,7 @@ public class PASDriver {
                     if (!customer.checkTableRows("customer")) {
 
                         customer.checkAccountIfExist();
-                        System.out.println("Creating Policy\n");
+                        System.out.println("Creating Policy");
                         policy.createPolicy();
 
                         if (policyHolderChoice().equals("new")) {
@@ -61,6 +61,7 @@ public class PASDriver {
                             policyHolder.createPolicyHolder();
                         } else {
                             if (!policyHolder.checkTableRows("policy_holder")) {
+                                policyHolder.printAllPolicyHolderOfCustomer(customer.getCustomerID());
                                 policyHolder.getPolicyHolderbyID();
                             } else {
                                 System.out.println("There are no policy Holder saved. Do you want to create new Policy Holder?");
@@ -69,7 +70,7 @@ public class PASDriver {
                                 if (confirmStr.toLowerCase().equals("yes")) {
                                     policyHolder.createPolicyHolder();
                                 } else {
-                                    System.out.println("Policy Holder creation cancelled.");
+                                    System.out.println("\nPolicy Holder creation cancelled.\n");
                                     break;
                                 }
                             }
@@ -89,17 +90,18 @@ public class PASDriver {
                         System.out.println("Input 'yes' to BUY the policy, input any key to CANCEL the policy creation.");
                         System.out.println("Note: Newly input Policy, Policy Holder and Vehicle/s will NOT be saved when you CANCEL buying the policy.");
                         String confirmStr = input.next();
+
                         if (confirmStr.toLowerCase().equals("yes")) {
                             if (policyHolder.getPolicyHolderID() == 0) {
-                                policyHolder.savePolicyHolder();
+                                policyHolder.savePolicyHolder(customer.getCustomerID());
                             }
                             policy.savePolicy(customer.getCustomerID(), policyHolder.getPolicyHolderID());
                             saveVehicletoDB(vehiclesArr, policy.getPolicyId());
 
-                            System.out.println("CONGRATULATIONS! YOU HAVE SUCCESSFULLY BOUGHT A POLICY.\n");
+                            System.out.println("\nCONGRATULATIONS! YOU HAVE SUCCESSFULLY BOUGHT A POLICY.\n");
                             policy.printPolicyDetails();
                         } else {
-                            System.out.println("Transaction Cancelled.");
+                            System.out.println("\nTransaction Cancelled.\n");
                             break;
                         }
 
@@ -108,7 +110,7 @@ public class PASDriver {
                     }
                     break;
                 case 3:
-                    System.out.println("Cancel a Policy");
+                    System.out.println("\nCancel a Policy\n");
                     if (!policy.checkTableRows("policy")) {
                         policy.checkPolicyIfExists();
                         policy.checkPolicyStatus();
@@ -130,7 +132,7 @@ public class PASDriver {
                     }
                     break;
                 case 4:
-                    System.out.println("File a Claim");
+                    System.out.println("File a Claim\n");
                     if(!policy.checkTableRows("policy")){
 
                         policy.checkPolicyIfExists();
@@ -150,7 +152,7 @@ public class PASDriver {
                     }
                     break;
                 case 5:
-                    System.out.println("Search Customer");
+                    System.out.println("Search Customer\n");
                     if (!customer.checkTableRows("customer")) {
                         customer.searchCustomerByName();
                         if (!customer.getCustomerIDStr().equals("")) {
@@ -185,7 +187,7 @@ public class PASDriver {
                     }
                     break;
                 case 8:
-                    System.out.println("Exiting Application ");
+                    System.out.println("Exiting Application");
                     printProgressBar();
                     System.exit(0);
             }
@@ -196,14 +198,14 @@ public class PASDriver {
     public static int menu() {
 
         String[] choiceList = {
-                "Create a new Customer Account",
-                "Get a policy quote and buy the policy.",
-                "Cancel a specific policy.",
-                "File an accident claim against a policy.",
-                "Search for a Customer account",
-                "Search for and display a specific policy",
-                "Search for and display a specific claim",
-                "Exit the PAS System"
+            "Create a new Customer Account",
+            "Get a policy quote and buy the policy.",
+            "Cancel a specific policy.",
+            "File an accident claim against a policy.",
+            "Search for a Customer account",
+            "Search for and display a specific policy",
+            "Search for and display a specific claim",
+            "Exit the PAS System"
         };
 
         int menuChoice = 0;
@@ -312,7 +314,7 @@ public class PASDriver {
     public static void printProgressBar() {
         for (int counter = 0; counter <= 100; counter++) {
             try {
-                Thread.sleep(20);
+                Thread.sleep(12);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -337,7 +339,7 @@ public class PASDriver {
                 num = input.nextInt();
 
                 if (num <= 0) {
-                    System.out.println("Invalid Input");
+                    System.out.println("\nInvalid Input\n");
                     invalid = true;
                 } else {
                     invalid = false;
@@ -345,7 +347,7 @@ public class PASDriver {
 
             } catch (InputMismatchException e) {
                 input.nextLine();
-                System.out.println("Invalid Input");
+                System.out.println("\nInvalid Input\n");
                 invalid = true;
             }
         } while (invalid == true);

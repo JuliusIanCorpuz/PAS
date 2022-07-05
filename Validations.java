@@ -68,21 +68,18 @@ public class Validations {
                         idStrIntVal = Integer.parseInt(idStr.substring(1));
                         invalid = false;
                     } else {
-                        System.out.println("Claim ID must be 6 digits of length");
+                        System.out.println("\nClaim ID must be 6 digits of length\n");
                         invalid = true;
                     }
                 } else {
-                    System.out.println("Claim ID must start with 'C'");
+                    System.out.println("\nClaim ID must start with 'C'\n");
                     invalid = true;
                 }
                 
-            } catch(NumberFormatException ex){
-                System.out.println("Invalid Input");
+            } catch(Exception ex){
+                System.out.println("\nInvalid Input\n");
                 invalid = true;
-            } catch(StringIndexOutOfBoundsException e){
-                System.out.println("Invalid Input");
-                invalid = true;
-            }
+            } 
         } while(invalid == true);
 
         return idStrIntVal;
@@ -107,7 +104,7 @@ public class Validations {
                         invalidDate = true;
                     }
                 } else {
-                    System.out.println("Invalid input");
+                    System.out.println("\nInvalid input\n");
                 }
             }while(invalidDate);
         } else {
@@ -117,7 +114,7 @@ public class Validations {
                 if(inputDate.matches(dateFormat)){
                     invalidDate = false;
                 } else {
-                    System.out.println("Invalid input");
+                    System.out.println("\nInvalid input\n");
                 }
             }while(invalidDate);
         }
@@ -168,7 +165,7 @@ public class Validations {
                 num = input.nextDouble();
 
                 if(num <= 0){
-                    System.out.println("Invalid Input");
+                    System.out.println("\nInvalid Input\n");
                     invalid = true;
                 } else {
                     invalid = false;
@@ -176,7 +173,7 @@ public class Validations {
                 
             } catch(InputMismatchException e){
                 input.nextLine();
-                System.out.println("Invalid Input");
+                System.out.println("\nInvalid Input\n");
                 invalid = true;
             }
         }while(invalid == true);
@@ -192,7 +189,7 @@ public class Validations {
                 num = input.nextInt();
                 
                 if(num <= 0){
-                    System.out.println("Invalid Input");
+                    System.out.println("\nInvalid Input\n");
                     invalid = true;
                 } else {
                     invalid = false;
@@ -200,7 +197,7 @@ public class Validations {
                 
             } catch(InputMismatchException e){
                 input.nextLine();
-                System.out.println("Invalid Input");
+                System.out.println("\nInvalid Input\n");
                 invalid = true;
             }
         }while(invalid == true);
@@ -209,7 +206,7 @@ public class Validations {
 
     //print sample date format
     public void printSampleDateFormat(){
-        System.out.println("Please input date in this format 'YYYY-MM-DD'");
+        System.out.println("\nPlease input date in this format 'YYYY-MM-DD'");
     }
 
     //return current date
@@ -237,7 +234,7 @@ public class Validations {
             if(!str.equals("")){
                 isNotEmpty = true;
             } else {
-                System.out.println("Empty field");
+                System.out.println("\nCannot leave this field empty.\n");
             }
         }while(!isNotEmpty);
         return str;

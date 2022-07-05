@@ -33,7 +33,7 @@ public class Customer extends RatingEngine{
             insertCustomer.setString(3, this.address);
 
             insertCustomer.execute();
-            System.out.println("\nAccount successfully created!");
+            System.out.println("\nAccount successfully created!\n");
 
             PreparedStatement getLatestInsert = conn.prepareStatement("SELECT * FROM customer ORDER BY id DESC LIMIT 1");
             ResultSet queryRes = getLatestInsert.executeQuery(); 
@@ -103,10 +103,9 @@ public class Customer extends RatingEngine{
                 firstName = validateEmptyString("First Name: ", firstName = "");
                 lastName = validateEmptyString("Last Name: ",lastName = "");
 
-                getCustomerByName = conn.prepareStatement("SELECT * FROM customer WHERE first_name = "
-                                                            +firstName + "%' AND last_name LIKE '%"+lastName+"%' LIMIT 1");
+                getCustomerByName = conn.prepareStatement("SELECT * FROM customer WHERE first_name = '" + firstName + "' AND last_name = '" + lastName + "'");
+
                 queryRes = getCustomerByName.executeQuery(); 
-        
                 if(queryRes.next()){
                     System.out.println("Account successfully matched!\n");
                     this.account_id = queryRes.getInt("id");
@@ -122,7 +121,7 @@ public class Customer extends RatingEngine{
             }while(!isExist);
 
         } catch(SQLException ex){
-            System.out.println("Database error occured upon searching customer");
+            System.out.println("Database error occured upon searching customer"+ex);
         }
     }
 

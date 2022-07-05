@@ -85,8 +85,9 @@ public class Database extends Validations{
                     + "`date_of_birth` date DEFAULT NULL,"
                     + "`address` varchar(200) DEFAULT NULL,"
                     + "`drivers_license` varchar(45) DEFAULT NULL,"
-                    + "`drivers_license_issue_date` date DEFAULT NULL)";
-
+                    + "`drivers_license_issue_date` date DEFAULT NULL,"
+                    + "`customer_id` int DEFAULT NULL)";
+                    
             stmt.executeUpdate(createPolicyHolderTable);
 
             String createVehicleTable = "CREATE TABLE IF NOT EXISTS `vehicle` ("

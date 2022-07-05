@@ -8,6 +8,7 @@ public class PolicyHolder extends Customer {
     private String drivers_license;
     private java.sql.Date drivers_license_issue_date;
     private int drivers_license_age;
+    private int customer_id;
 
     //creating policy holder object
     public void createPolicyHolder(){
@@ -25,7 +26,6 @@ public class PolicyHolder extends Customer {
             driversLicenseIssueDate = validateDate("Drivers License Issue Date: ",driversLicenseIssueDate, dateOfBirth,"licenseAge");
             
             if(checkDateRange(null, getCurrentDate(), driversLicenseIssueDate).equals("after")){
-                System.out.println(checkDateRange(null, getCurrentDate(), driversLicenseIssueDate).equals("after"));
                 System.out.println("Date out of range.");
             }else{
                 outOfRange = false;
@@ -39,14 +39,16 @@ public class PolicyHolder extends Customer {
     }
     
     //saving policy holder to database
-    public void savePolicyHolder(){
+    public void savePolicyHolder(int customerID){
         try(
             Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword());
             Statement stmt = conn.createStatement()){
-
+            
             PreparedStatement savePolicyHolder = conn.prepareStatement("INSERT INTO policy_holder (first_name,last_name,date_of_birth,"
-                                                                        + "address,drivers_license,drivers_license_issue_date)"
-                                                                        +"VALUES (?,?,?,?,?,?)");
+                                                                        + "address,drivers_license,drivers_license_issue_date,customer_id)"
+                                                                        +"VALUES (?,?,?,?,?,?,?)");
+            
+            setCustomerID(customerID);
 
             savePolicyHolder.setString(1, super.getFirstName());
             savePolicyHolder.setString(2, super.getLastName());
@@ -54,7 +56,8 @@ public class PolicyHolder extends Customer {
             savePolicyHolder.setString(4, super.getAddress());
             savePolicyHolder.setString(5, this.drivers_license);
             savePolicyHolder.setDate(6, this.drivers_license_issue_date);
-            
+            savePolicyHolder.setInt(7, this.customer_id);
+
             savePolicyHolder.execute(); 
 
             String getLatestPolicyHolderID = "SELECT id FROM policy_holder ORDER BY id DESC LIMIT 1";
@@ -63,10 +66,9 @@ public class PolicyHolder extends Customer {
             while(quereyRes.next()){
                 setPolicyHolderID(quereyRes.getInt("id"));
             }
-
             
         } catch (SQLException ex){
-            System.out.println("Database error occured upon saving new policy holder");
+            System.out.println("Database error occured upon saving new policy holder" + ex);
         }
     }
 
@@ -107,6 +109,33 @@ public class PolicyHolder extends Customer {
             System.out.println("Database error occured upon checking policy holder existence");
         }
     }
+    
+    public void printAllPolicyHolderOfCustomer(int customerID){
+
+        try(Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword())){
+
+
+            PreparedStatement getPolicyHolder = conn.prepareStatement("SELECT * FROM policy_holder WHERE id = " + customerID);
+            ResultSet queryRes = getPolicyHolder.executeQuery(); 
+
+            System.out.println("\nYou may refer for the list below to check the id of your desired Policy Holder\n");
+
+            while(queryRes.next()){
+                int policyHolderID = queryRes.getInt("id");
+                String policyHolderFirstName = queryRes.getString("first_name");
+                String policyHolderLastName = queryRes.getString("last_name");
+                java.sql.Date DriversLicenseIssueDate = queryRes.getDate("drivers_license_issue_date");
+                System.out.format("ID\t First Name\t\t Last Name\t\t License Issue Date\n%s %8s %23s %32s",policyHolderID, policyHolderFirstName, policyHolderLastName, DriversLicenseIssueDate);
+                System.out.println("\n");
+            }
+
+            
+
+        } catch (SQLException ex){
+            System.out.println("Database error upon printing all policy holder associated with a customer.");
+        }
+
+    }
 
     //set drivers license age
     public void setDriversLicenseAge(){
@@ -137,4 +166,9 @@ public class PolicyHolder extends Customer {
          this.policy_holder_id = id;
     }
 
+    public void setCustomerID(int id){
+        this.customer_id = id;
+    }
+
 }
+    

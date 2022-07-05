@@ -124,7 +124,7 @@ public class Vehicle extends Policy {
             if (choiceInput.toLowerCase().equals(fieldName.toLowerCase())) {
                 printChoices(strArr, fieldName);
             } else if (choiceMatch == false) {
-                System.out.println("Input not matched. Please try again.");
+                System.out.println("\nInput not matched. Please try again.\n");
             }
 
         } while (!choiceMatch);
