@@ -105,7 +105,7 @@ public class Policy extends PolicyHolder{
 
             PreparedStatement updatePolicy = conn.prepareStatement("UPDATE policy set cancelled = 1 where id = " + policyID);
             updatePolicy.executeUpdate();
-            System.out.println("You have cancelled the policy with id = " + policyID);
+            System.out.println("You have cancelled the policy with id = " + idPadding(policyID, 6, 0));
 
         } catch(SQLException ex){
             System.out.println("Database error occured upon checking policy holder existence");

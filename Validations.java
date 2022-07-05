@@ -64,11 +64,11 @@ public class Validations {
             try{
                 idStr = input.nextLine();
                 if(idStr.substring(0,1).toUpperCase().equals("C")){
-                    if(idStr.length() == 7){
+                    if(idStr.length() == 6){
                         idStrIntVal = Integer.parseInt(idStr.substring(1));
                         invalid = false;
                     } else {
-                        System.out.println("\nClaim ID must be 6 digits of length\n");
+                        System.out.println("\nClaim ID must be 6 digits of length including the character 'C'\n");
                         invalid = true;
                     }
                 } else {

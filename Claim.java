@@ -82,7 +82,7 @@ public class Claim extends Policy{
             ResultSet queryRes;
             
             do{
-                System.out.println("Please input an existing claim id (Ex. C000006): ");
+                System.out.println("Please input an existing claim id (Ex. C00006): ");
                 String claimIDS = "";
                 int claimIdInput = parseIdStrtoInt(claimIDS);
                 

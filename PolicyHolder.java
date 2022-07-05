@@ -19,10 +19,9 @@ public class PolicyHolder extends Customer {
         String driversLicense = validateEmptyString("Drivers License: ",driversLicense = "");
         
         String driversLicenseIssueDate = "";
-
+        
         Boolean outOfRange = true;
         do{
-            
             driversLicenseIssueDate = validateDate("Drivers License Issue Date: ",driversLicenseIssueDate, dateOfBirth,"licenseAge");
             
             if(checkDateRange(null, getCurrentDate(), driversLicenseIssueDate).equals("after")){

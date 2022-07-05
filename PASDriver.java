@@ -51,7 +51,6 @@ public class PASDriver {
                     break;
                 case 2:
                     if (!customer.checkTableRows("customer")) {
-
                         customer.checkAccountIfExist();
                         System.out.println("Creating Policy");
                         policy.createPolicy();
@@ -78,8 +77,7 @@ public class PASDriver {
 
                         policyHolder.setDriversLicenseAge();
 
-                        System.out.print("Number of vehicles: ");
-                        int numOfVehicles = intValidator(numOfVehicles = 0);
+                        int numOfVehicles = intValidator("Number of vehicles: ",numOfVehicles = 0);
 
                         Vehicle[] vehiclesArr = new Vehicle[numOfVehicles];
 
@@ -145,6 +143,7 @@ public class PASDriver {
                                                     + policy.getPolicyEffectiveDate() + "\nExpiration Date: " + policy.getPolicyExpirationDate() + "\n");
                                 claim.createClaim(policy.getPolicyEffectiveDate(),policy.getPolicyExpirationDate());
                                 claim.saveClaim(policy.getPolicyId());
+                                claim.printClaimDetails();
                             }
                         }
                     } else {
@@ -217,8 +216,7 @@ public class PASDriver {
         }
 
         do {
-            System.out.print("\nPlease input the number of your desired transaction: ");
-            menuChoice = intValidator(menuChoice);
+            menuChoice = intValidator("Please input the number of your desired transaction: ", menuChoice);
             if (menuChoice < 0 || menuChoice > 8) {
                 System.out.println("Input choice is out of range, please try again.");
             }
@@ -332,9 +330,10 @@ public class PASDriver {
     }
 
     // validation int data input by the user
-    public static int intValidator(int num) {
+    public static int intValidator(String label, int num) {
         boolean invalid;
         do {
+            System.out.print(label);
             try {
                 num = input.nextInt();
 
