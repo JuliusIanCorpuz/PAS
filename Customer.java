@@ -57,9 +57,11 @@ public class Customer extends RatingEngine{
     }
 
     //prompt user for account/customer id to check if the account exists on the db
-    public void checkAccountIfExist(){
+    public int checkAccountIfExist(){
         int accountNum = 0;
         Boolean isExist = false;
+
+        int tries = -1;
 
         try(
             Connection conn = DriverManager.getConnection( GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword())){
@@ -68,6 +70,15 @@ public class Customer extends RatingEngine{
             ResultSet queryRes;
 
             do{
+                tries++;
+
+                System.out.println("\nMaximum input trials = " + (5-tries));
+                if(tries == 5){
+                    System.out.println("\nYou have reached the max trials for selecting a customer.\n"
+                                        +"You can select 1 on the Menu to create a new customer. Thank you.\n");
+                    return tries;
+                }
+                
                 accountNum = intValidator("Please input an existing account number/id: ",accountNum);
 
                 getCustomerAccount = conn.prepareStatement("SELECT id FROM customer where id = " + accountNum);
@@ -85,6 +96,8 @@ public class Customer extends RatingEngine{
         } catch(SQLException ex){
             System.out.println("Database error upon checking customer id existence");
         }
+
+        return tries;
     }
 
     /**Prompt the user for first name and last name and check if it has match from the Database. 

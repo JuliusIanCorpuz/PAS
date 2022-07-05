@@ -51,7 +51,10 @@ public class PASDriver {
                     break;
                 case 2:
                     if (!customer.checkTableRows("customer")) {
-                        customer.checkAccountIfExist();
+
+                        if(customer.checkAccountIfExist() == 5){
+                            break;
+                        }
                         System.out.println("Creating Policy");
                         policy.createPolicy();
 
@@ -169,7 +172,6 @@ public class PASDriver {
                             policy.checkPolicyStatus();
                             policy.printPolicyDetails();
                         }
-
                     } else {
                         printEmptyTable("Policy");
                     }
@@ -204,7 +206,7 @@ public class PASDriver {
             "Search for a Customer account",
             "Search for and display a specific policy",
             "Search for and display a specific claim",
-            "Exit the PAS System"
+            "Exit the PAS System\n"
         };
 
         int menuChoice = 0;
