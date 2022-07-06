@@ -73,7 +73,10 @@ public class Claim extends Policy{
     }
 
     //check if user input claim id exists. If exists, allocate the retrieved data to the claim object
-    public void searchClaim(){
+    public int searchClaim(){
+
+        int tries = -1;
+
         try(
             Connection conn = DriverManager.getConnection( GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword()))
         {
@@ -82,6 +85,15 @@ public class Claim extends Policy{
             ResultSet queryRes;
             
             do{
+                tries++;
+
+                System.out.println("Maximum input trials = " + (5-tries));
+                if(tries == 5){
+                    System.out.println("\nYou have reached the max trials for searching a claim.\n"
+                                        +"You can select 4 on the Menu to file a new claim. Thank you.\n");
+                    return tries;
+                }
+
                 System.out.println("Please input an existing claim id (Ex. C00006): ");
                 String claimIDS = "";
                 int claimIdInput = parseIdStrtoInt(claimIDS);
@@ -108,6 +120,7 @@ public class Claim extends Policy{
             System.out.println("Database error occured upon searching a claim");
         }
 
+        return tries;
     }
 
     //print claim object details

@@ -35,22 +35,15 @@ public class Customer extends RatingEngine{
             insertCustomer.execute();
             System.out.println("\nAccount successfully created!\n");
 
-            PreparedStatement getLatestInsert = conn.prepareStatement("SELECT * FROM customer ORDER BY id DESC LIMIT 1");
+            PreparedStatement getLatestInsert = conn.prepareStatement("SELECT id FROM customer ORDER BY id DESC LIMIT 1");
             ResultSet queryRes = getLatestInsert.executeQuery(); 
-            ResultSetMetaData rsmd = queryRes.getMetaData();
-
-            for (int counter = 1; counter <= rsmd.getColumnCount(); counter++ ){
-                String field = rsmd.getColumnName(counter);
-                System.out.print(field + "\t");
-            }
-
-            System.out.println("");
+            
             while(queryRes.next()){  
-                System.out.println(idPadding(queryRes.getInt(1),4,0)+"\t"
-                                            +queryRes.getString(2)+"\t\t"
-                                            +queryRes.getString(3)+"\t\t"
-                                            +queryRes.getString(4) + "\n");  
+                setCustomerIDStr(queryRes.getInt(1)); 
             }  
+
+            printCustomerDetails();
+            
         } catch(SQLException ex){
             System.out.println("Database error occured upon saving new customer");
         }
@@ -103,7 +96,10 @@ public class Customer extends RatingEngine{
     /**Prompt the user for first name and last name and check if it has match from the Database. 
      *If matched, load the customer object with the query result
      */
-    public void searchCustomerByName(){
+    public int searchCustomerByName(){
+
+        int tries = -1;
+
         try(
             Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword())){
             Boolean isExist = false;
@@ -112,6 +108,15 @@ public class Customer extends RatingEngine{
             String firstName = "";
             String lastName = "";
             do{
+                tries++;
+
+                System.out.println("\nMaximum input trials = " + (5-tries));
+                if(tries == 5){
+                    System.out.println("\nYou have reached the max trials for selecting a customer.\n"
+                                        +"You can select 1 on the Menu to create a new customer. Thank you.\n");
+                    return tries;
+                }
+
                 System.out.println("Please input an existing customer account");
                 firstName = validateEmptyString("First Name: ", firstName = "");
                 lastName = validateEmptyString("Last Name: ",lastName = "");
@@ -136,6 +141,8 @@ public class Customer extends RatingEngine{
         } catch(SQLException ex){
             System.out.println("Database error occured upon searching customer"+ex);
         }
+
+        return tries;
     }
 
     //return int type customer/account id
@@ -176,6 +183,11 @@ public class Customer extends RatingEngine{
     //set customer/account last name
     public void setLastName(String lastName){
         this.last_name = lastName;
+    }
+
+    //set string type customer/account id
+    public void setCustomerIDStr(int id){
+        this.account_id_str = idPadding(id, 4, 0);
     }
 
     //return string type customer full name

@@ -113,8 +113,13 @@ public class PASDriver {
                 case 3:
                     System.out.println("\nCancel a Policy\n");
                     if (!policy.checkTableRows("policy")) {
-                        policy.checkPolicyIfExists();
+
+                        if(policy.checkPolicyIfExists() == 5){
+                            break;
+                        }
+
                         policy.checkPolicyStatus();
+
                         if(!policy.getPolicyStatus().equals("cancelled") && 
                             !policy.getPolicyStatus().equals("expired")){
                             policy.printPolicyDetails();
@@ -136,7 +141,9 @@ public class PASDriver {
                     System.out.println("File a Claim\n");
                     if(!policy.checkTableRows("policy")){
 
-                        policy.checkPolicyIfExists();
+                        if(policy.checkPolicyIfExists() == 5){
+                            break;
+                        }
                         
                         if (policy.getPolicyId() > 0){
                             policy.checkPolicyStatus();
@@ -156,7 +163,11 @@ public class PASDriver {
                 case 5:
                     System.out.println("Search Customer\n");
                     if (!customer.checkTableRows("customer")) {
-                        customer.searchCustomerByName();
+
+                        if(customer.searchCustomerByName() == 5){
+                            break;
+                        }
+
                         if (!customer.getCustomerIDStr().equals("")) {
                             customer.printCustomerDetails();
                         }
@@ -167,7 +178,11 @@ public class PASDriver {
                 case 6:
                     System.out.println("Search Policy\n");
                     if (!policy.checkTableRows("policy")) {
-                        policy.checkPolicyIfExists();
+
+                        if(policy.checkPolicyIfExists() == 5){
+                            break;
+                        }
+
                         if (policy.getPolicyId() > 0) {
                             policy.checkPolicyStatus();
                             policy.printPolicyDetails();
@@ -181,7 +196,11 @@ public class PASDriver {
                     System.out.println("Search Claim\n");
 
                     if (!claim.checkTableRows("claim")) {
-                        claim.searchClaim();
+
+                        if(claim.searchClaim() == 5){
+                            break;
+                        }
+                        
                         claim.printClaimDetails();
                     } else {
                         printEmptyTable("Claim");

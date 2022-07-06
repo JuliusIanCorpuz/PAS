@@ -40,9 +40,9 @@ public class Policy extends PolicyHolder{
     }
 
     //check if user input policy id exists, if exists, allocate the retrieved data to the policy object
-    public void checkPolicyIfExists(){
+    public int checkPolicyIfExists(){
         int policyIdInput = 0;
-
+        int tries = -1;
         try(
             Connection conn = DriverManager.getConnection( GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword())){
             Boolean isExist = false;
@@ -50,6 +50,15 @@ public class Policy extends PolicyHolder{
             ResultSet queryRes;
             
             do{
+                tries++;
+
+                System.out.println("Maximum input trials = " + (5-tries));
+                if(tries == 5){
+                    System.out.println("\nYou have reached the max trials for selecting a policy.\n"
+                                        +"You can select 2 on the Menu to buy a new policy. Thank you.\n");
+                    return tries;
+                }
+
                 policyIdInput = intValidator("Please input an existing policy id: ",policyIdInput = 0);
 
                 getPolicy = conn.prepareStatement("SELECT * FROM policy where id = " + policyIdInput);
@@ -74,6 +83,8 @@ public class Policy extends PolicyHolder{
         } catch(SQLException ex){
             System.out.println("Database error occured upon checking policy holder existence");
         }
+
+        return tries;
     }
 
     //check policy status
