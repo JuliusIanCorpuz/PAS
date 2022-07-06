@@ -43,7 +43,7 @@ public class Customer extends RatingEngine{
             }  
 
             printCustomerDetails();
-            
+
         } catch(SQLException ex){
             System.out.println("Database error occured upon saving new customer");
         }
@@ -143,6 +143,52 @@ public class Customer extends RatingEngine{
         }
 
         return tries;
+    }
+
+    public void printPolicyAndPolicyHolder(){
+
+        try(
+            Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword());
+            Statement stmt = conn.createStatement()){
+
+            String getPolicy = "SELECT * FROM policy WHERE customer_id =" +this.account_id;
+
+            ResultSet getPolicyRes = stmt.executeQuery(getPolicy); 
+            
+            System.out.println("Policy/Polices bought by the Customer\n");
+
+            while(getPolicyRes.next()){
+                String policy_id = idPadding(getPolicyRes.getInt("id"), 6, 0);
+                Date effective_date = getPolicyRes.getDate("effective_date");
+                Date expiration_date = getPolicyRes.getDate("expiration_date");
+                double policy_cost = getPolicyRes.getDouble("policy_cost");
+
+                System.out.println("Policy ID: "+ policy_id + "\n"
+                        + "Effective Date: "+ effective_date +"\n"
+                        + "Expiration Date: "+ expiration_date + "\n"
+                        + "Policy Cost: "+ policy_cost + "\n");
+            }
+
+            String getPolicyHolder = "SELECT * FROM policy_holder WHERE customer_id =" +this.account_id;
+
+            ResultSet getPolicyHolderRes = stmt.executeQuery(getPolicyHolder); 
+
+            System.out.println("Policy Holders linked with the Customer\n");
+
+            while(getPolicyHolderRes.next()){
+                String firstName = getPolicyHolderRes.getString("first_name");
+                String lastName = getPolicyHolderRes.getString("last_name");
+                Date date_of_birth = getPolicyHolderRes.getDate("date_of_birth");
+                Date drivers_license_issue_date = getPolicyHolderRes.getDate("drivers_license_issue_date");
+
+                System.out.println("Full Name: "+ firstName + " "+ lastName + "\n"
+                        + "Birthday: "+ date_of_birth +"\n"
+                        + "Drivers License Date: "+ drivers_license_issue_date + "\n");
+            }
+
+        }catch(SQLException ex){
+            System.out.println("Database error occured upon printing other customer details." + ex);
+        }
     }
 
     //return int type customer/account id

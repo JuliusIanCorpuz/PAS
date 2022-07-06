@@ -87,6 +87,56 @@ public class Policy extends PolicyHolder{
         return tries;
     }
 
+    public void printPolicyHolderAndVehicles(){
+
+        try(
+            Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword());
+            Statement stmt = conn.createStatement()){
+
+            String getPolicyHolder = "SELECT * FROM policy_holder WHERE id =" +this.policy_holder_id;
+
+            ResultSet getPolicyHolderRes = stmt.executeQuery(getPolicyHolder); 
+
+            System.out.println("Policy Holder associated with the Policy\n");
+
+            while(getPolicyHolderRes.next()){
+                String firstName = getPolicyHolderRes.getString("first_name");
+                String lastName = getPolicyHolderRes.getString("last_name");
+                java.sql.Date date_of_birth = getPolicyHolderRes.getDate("date_of_birth");
+                java.sql.Date drivers_license_issue_date = getPolicyHolderRes.getDate("drivers_license_issue_date");
+
+                System.out.println("Full Name: "+ firstName + " "+ lastName + "\n"
+                        + "Birthday: "+ date_of_birth +"\n"
+                        + "Drivers License Date: "+ drivers_license_issue_date + "\n");
+            }
+
+            String getVehicles = "SELECT * FROM vehicle WHERE policy_id =" +this.policy_id;
+
+            ResultSet getVehiclesRes = stmt.executeQuery(getVehicles); 
+            
+            System.out.println("Vehicles bought by the Customer\n");
+
+            while(getVehiclesRes.next()){
+                String make = getVehiclesRes.getString("make");
+                String model = getVehiclesRes.getString("model");
+                int model_year = getVehiclesRes.getInt("model_year");
+                double purchase_price = getVehiclesRes.getDouble("purchase_price");
+                double premium_charge = getVehiclesRes.getDouble("premium_charge");
+                String policy_id_str = idPadding(getVehiclesRes.getInt("policy_id"), 6, 0);
+
+                System.out.println("Policy ID: "+ policy_id_str + "\n"
+                    + "Make: "+ make + "\n"
+                    + "Model: "+ model +"\n"
+                    + "Model Year: "+ model_year + "\n"
+                    + "Purchase Price: "+ purchase_price + "\n"
+                    + "Premium Charge: "+ premium_charge + "\n");
+            }
+
+        }catch(SQLException ex){
+            System.out.println("Database error occured upon printing other customer details." + ex);
+        }
+    }
+
     //check policy status
     public void checkPolicyStatus(){
         String status = "";

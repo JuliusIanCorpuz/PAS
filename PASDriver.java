@@ -170,6 +170,7 @@ public class PASDriver {
 
                         if (!customer.getCustomerIDStr().equals("")) {
                             customer.printCustomerDetails();
+                            customer.printPolicyAndPolicyHolder();
                         }
                     } else {
                         printEmptyTable("Customer");
@@ -186,6 +187,7 @@ public class PASDriver {
                         if (policy.getPolicyId() > 0) {
                             policy.checkPolicyStatus();
                             policy.printPolicyDetails();
+                            policy.printPolicyHolderAndVehicles();
                         }
                     } else {
                         printEmptyTable("Policy");
@@ -200,7 +202,7 @@ public class PASDriver {
                         if(claim.searchClaim() == 5){
                             break;
                         }
-                        
+
                         claim.printClaimDetails();
                     } else {
                         printEmptyTable("Claim");
