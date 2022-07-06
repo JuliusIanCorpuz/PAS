@@ -87,6 +87,7 @@ public class Policy extends PolicyHolder{
         return tries;
     }
 
+    //print policy holder and vehicles linked with the current policy object
     public void printPolicyHolderAndVehicles(){
 
         try(

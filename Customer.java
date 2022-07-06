@@ -145,6 +145,7 @@ public class Customer extends RatingEngine{
         return tries;
     }
 
+    //print policy and policy holder associated with the current customer object
     public void printPolicyAndPolicyHolder(){
 
         try(
