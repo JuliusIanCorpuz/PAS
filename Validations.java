@@ -68,7 +68,7 @@ public class Validations {
                         idStrIntVal = Integer.parseInt(idStr.substring(1));
                         invalid = false;
                     } else {
-                        System.out.println("\nClaim ID must be 6 digits of length including the character 'C'\n");
+                        System.out.println("\nClaim ID must be 6 digits of length including the character 'C'.");
                         invalid = true;
                     }
                 } else {

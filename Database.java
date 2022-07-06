@@ -32,7 +32,7 @@ public class Database extends Validations{
 
                 while(resultSet.next()){
                     String databaseName = resultSet.getString(1);
-                    if(!databaseName.toLowerCase().equals("policyandclaims")){
+                    if(!databaseName.equalsIgnoreCase("policyandclaims")){
                         String createDBStr = "CREATE DATABASE IF NOT EXISTS " + this.db_schema_name;
                         stmt.executeUpdate(createDBStr);
                         break;

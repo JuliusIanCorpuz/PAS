@@ -109,31 +109,35 @@ public class PolicyHolder extends Customer {
         }
     }
     
-    public void printAllPolicyHolderOfCustomer(int customerID){
+    public Boolean printAllPolicyHolderOfCustomer(int customerID){
+
+        Boolean isEmpty = true;
 
         try(Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword())){
-
 
             PreparedStatement getPolicyHolder = conn.prepareStatement("SELECT * FROM policy_holder WHERE id = " + customerID);
             ResultSet queryRes = getPolicyHolder.executeQuery(); 
 
-            System.out.println("\nYou may refer for the list below to check the id of your desired Policy Holder\n");
+            if(queryRes.next()){
+                isEmpty = false;
 
-            while(queryRes.next()){
-                int policyHolderID = queryRes.getInt("id");
-                String policyHolderFirstName = queryRes.getString("first_name");
-                String policyHolderLastName = queryRes.getString("last_name");
-                java.sql.Date DriversLicenseIssueDate = queryRes.getDate("drivers_license_issue_date");
-                System.out.format("ID\t First Name\t\t Last Name\t\t License Issue Date\n%s %8s %23s %32s",policyHolderID, policyHolderFirstName, policyHolderLastName, DriversLicenseIssueDate);
-                System.out.println("\n");
+                System.out.println("\nYou may refer for the list below to check the id of your desired Policy Holder\n");
+
+                while(queryRes.next()){
+                    int policyHolderID = queryRes.getInt("id");
+                    String policyHolderFirstName = queryRes.getString("first_name");
+                    String policyHolderLastName = queryRes.getString("last_name");
+                    java.sql.Date DriversLicenseIssueDate = queryRes.getDate("drivers_license_issue_date");
+                    System.out.format("ID\t First Name\t\t Last Name\t\t License Issue Date\n%s %8s %23s %32s",policyHolderID, policyHolderFirstName, policyHolderLastName, DriversLicenseIssueDate);
+                    System.out.println("\n");
+                }
             }
-
-            
 
         } catch (SQLException ex){
             System.out.println("Database error upon printing all policy holder associated with a customer.");
         }
 
+        return isEmpty;
     }
 
     //set drivers license age

@@ -63,13 +63,26 @@ public class PASDriver {
                             policyHolder.createPolicyHolder();
                         } else {
                             if (!policyHolder.checkTableRows("policy_holder")) {
-                                policyHolder.printAllPolicyHolderOfCustomer(customer.getCustomerID());
-                                policyHolder.getPolicyHolderbyID();
+                                if(!policyHolder.printAllPolicyHolderOfCustomer(customer.getCustomerID())){
+                                    policyHolder.getPolicyHolderbyID();
+                                } else {
+                                    System.out.println("There are no policy Holder linked with this customer. Do you want to create new Policy Holder?");
+                                    System.out.println("Input 'yes' to CREATE new, input any key to EXIT Policy Holder creation.");
+                                    String confirmStr = input.next();
+                                    
+                                    if (confirmStr.equalsIgnoreCase("yes")) {
+                                        policyHolder.createPolicyHolder();
+                                    } else {
+                                        System.out.println("\nPolicy Holder creation cancelled.\n");
+                                        break;
+                                    }
+                                }
                             } else {
                                 System.out.println("There are no policy Holder saved. Do you want to create new Policy Holder?");
                                 System.out.println("Input 'yes' to CREATE new, input any key to EXIT Policy Holder creation.");
-                                String confirmStr = input.nextLine();
-                                if (confirmStr.toLowerCase().equals("yes")) {
+                                
+                                String confirmStr = input.next();
+                                if (confirmStr.equalsIgnoreCase("yes")) {
                                     policyHolder.createPolicyHolder();
                                 } else {
                                     System.out.println("\nPolicy Holder creation cancelled.\n");
@@ -90,9 +103,9 @@ public class PASDriver {
                         System.out.println("Derived policy premium: " + policy.getPolicyCost());
                         System.out.println("Input 'yes' to BUY the policy, input any key to CANCEL the policy creation.");
                         System.out.println("Note: Newly input Policy, Policy Holder and Vehicle/s will NOT be saved when you CANCEL buying the policy.");
-                        String confirmStr = input.nextLine();
-
-                        if (confirmStr.toLowerCase().equals("yes")) {
+                        
+                        String confirmStr = input.next();
+                        if (confirmStr.equalsIgnoreCase("yes")) {
                             if (policyHolder.getPolicyHolderID() == 0) {
                                 policyHolder.savePolicyHolder(customer.getCustomerID());
                             }
@@ -125,8 +138,8 @@ public class PASDriver {
                             policy.printPolicyDetails();
                             System.out.println("\nAre you sure to cancel this policy?");
                                 System.out.println("Input 'yes' to cancel the policy, input any key to EXIT policy cancellation.");
-                                String confirmStr = input.nextLine();
-                                if (confirmStr.toLowerCase().equals("yes")) {
+                                String confirmStr = input.next();
+                                if (confirmStr.equalsIgnoreCase("yes")) {
                                     policy.cancelPolicy(policy.getPolicyId());
                                 } else {
                                     System.out.println("\nPolicy cancellation ended.\n");
@@ -255,7 +268,7 @@ public class PASDriver {
 
         System.out.println("\nAre you sure you want to save this customer?");
         System.out.println("Input 'yes' to save. Input any key to exit customer creation.");
-        String confirmStr = input.nextLine();
+        String confirmStr = input.next();
         if (confirmStr.equalsIgnoreCase("yes")) {
             customer.saveCustomer();
         } else {
@@ -274,10 +287,10 @@ public class PASDriver {
                     "\nInput 'new' to create new Policy Holder. Input 'link' to link existing Policy Holder your policy. ");
 
             choice = input.next();
-            if (!choice.toLowerCase().equals("new") && !choice.toLowerCase().equals("link")) {
+            if (!choice.equalsIgnoreCase("new") && !choice.equalsIgnoreCase("link")) {
                 System.out.println("Invalid input");
             }
-        } while (!choice.toLowerCase().equals("new") && !choice.toLowerCase().equals("link"));
+        } while (!choice.equalsIgnoreCase("new") && !choice.equalsIgnoreCase("link"));
 
         return choice;
     }
@@ -300,15 +313,13 @@ public class PASDriver {
             System.out.println("Are you sure you want to add and save this to your Policy?");
             System.out.println("Input 'yes' to add and save. Input any key to re-input the vehicle.");
             
-            String confirmStr = input.nextLine();
-            if (input.hasNextLine()) {
-                if (confirmStr.equalsIgnoreCase("yes")) {
-                    System.out.println("Vehicle Saved!\n");
-                } else {
-                    System.out.println("Vehicle Removed!\n");
-                    index -= 1;
-                }  
-            } 
+            String confirmStr = input.next();
+            if (confirmStr.equalsIgnoreCase("yes")) {
+                System.out.println("Vehicle Saved!\n");
+            } else {
+                System.out.println("Vehicle Removed!\n");
+                index -= 1;
+            }  
         }
 
         return policyPrice;

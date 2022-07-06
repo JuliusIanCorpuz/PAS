@@ -97,7 +97,7 @@ public class Policy extends PolicyHolder{
 
             ResultSet getPolicyHolderRes = stmt.executeQuery(getPolicyHolder); 
 
-            System.out.println("Policy Holder associated with the Policy\n");
+            System.out.println("Policy Holder associated with the Policy:\n");
 
             while(getPolicyHolderRes.next()){
                 String firstName = getPolicyHolderRes.getString("first_name");
@@ -114,7 +114,7 @@ public class Policy extends PolicyHolder{
 
             ResultSet getVehiclesRes = stmt.executeQuery(getVehicles); 
             
-            System.out.println("Vehicles bought by the Customer\n");
+            System.out.println("Vehicles covered by the Policy:\n");
 
             while(getVehiclesRes.next()){
                 String make = getVehiclesRes.getString("make");
@@ -128,8 +128,8 @@ public class Policy extends PolicyHolder{
                     + "Make: "+ make + "\n"
                     + "Model: "+ model +"\n"
                     + "Model Year: "+ model_year + "\n"
-                    + "Purchase Price: "+ purchase_price + "\n"
-                    + "Premium Charge: "+ premium_charge + "\n");
+                    + "Purchase Price: $"+ purchase_price + "\n"
+                    + "Premium Charge: $"+ premium_charge + "\n");
             }
 
         }catch(SQLException ex){
@@ -209,7 +209,8 @@ public class Policy extends PolicyHolder{
     //print policy object details
     public void printPolicyDetails(){
 
-        System.out.println("ID: "+ this.policy_id_str + "\n"
+        System.out.println("\nPolicy\n"
+                            +"ID: "+ this.policy_id_str + "\n"
                             + "Effective Date: "+ this.effective_date +"\n"
                             + "Expiration Date: "+ this.expiration_date + "\n"
                             + "Policy Cost: $"+ this.policy_cost + "\n"

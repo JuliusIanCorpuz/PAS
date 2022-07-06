@@ -51,6 +51,9 @@ public class Claim extends Policy{
 
     //save claim object to database
     public void saveClaim(int policyID){
+        
+        setPolicyID(policyID);
+
         try(Connection conn = DriverManager.getConnection(GET_DB_MYSQLPORT() + getDBSchemaNAme(), getDBUsername(), getDBPassword())){
 
             PreparedStatement saveClaim = conn.prepareStatement("INSERT INTO claim (date_of_accident,accident_address,description,damage_to_vehicle"
@@ -65,7 +68,14 @@ public class Claim extends Policy{
 
             saveClaim.execute();
 
-            System.out.println("You have successfully claimed your insurance.");
+            System.out.println("\nYou have successfully claimed your insurance.");
+
+            PreparedStatement getLatestClaimInsert = conn.prepareStatement("SELECT * FROM claim ORDER BY id DESC LIMIT 1");
+            ResultSet queryRes = getLatestClaimInsert.executeQuery(); 
+
+            while(queryRes.next()){
+                setClaimID(queryRes.getInt("id"));
+            }
 
         } catch(SQLException ex){
             System.out.println("Database error occured upon filing a claim.");
@@ -94,7 +104,7 @@ public class Claim extends Policy{
                     return tries;
                 }
 
-                System.out.println("Please input an existing claim id (Ex. C00006): ");
+                System.out.print("Please input an existing claim id (Ex. C00006): ");
                 String claimIDS = "";
                 int claimIdInput = parseIdStrtoInt(claimIDS);
                 
@@ -112,7 +122,7 @@ public class Claim extends Policy{
                     this.policy_id = queryRes.getInt("policy_id");
                     isExist = true;
                 } else {
-                    System.out.println("Policy with ID = " +  claimIdInput +" doesn't exist");
+                    System.out.println("\nClaim with ID = " +  claimIdInput +" doesn't exist\n");
                 }
             }while(!isExist);
 
@@ -138,5 +148,17 @@ public class Claim extends Policy{
     public int getClaimId(){
         return this.claim_id;
     }
+
+    //set claim object policy id
+    public void setPolicyID(int id){
+        this.policy_id = id;
+    }
+
+    //set claim object id
+    public void setClaimID(int id){
+        this.claim_id = id;
+        this.claim_id_str = idPadding(this.claim_id, 5, 1);
+    }
+
 
 }

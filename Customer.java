@@ -134,7 +134,7 @@ public class Customer extends RatingEngine{
                      
                     isExist = true;
                 } else {
-                    System.out.println("\nNo matched found.\n");
+                    System.out.println("\nNo matched found.");
                 }
             }while(!isExist);
 
@@ -166,7 +166,7 @@ public class Customer extends RatingEngine{
                 System.out.println("Policy ID: "+ policy_id + "\n"
                         + "Effective Date: "+ effective_date +"\n"
                         + "Expiration Date: "+ expiration_date + "\n"
-                        + "Policy Cost: "+ policy_cost + "\n");
+                        + "Policy Cost: $"+ policy_cost + "\n");
             }
 
             String getPolicyHolder = "SELECT * FROM policy_holder WHERE customer_id =" +this.account_id;
