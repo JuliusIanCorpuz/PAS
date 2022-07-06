@@ -68,7 +68,7 @@ public class PASDriver {
                             } else {
                                 System.out.println("There are no policy Holder saved. Do you want to create new Policy Holder?");
                                 System.out.println("Input 'yes' to CREATE new, input any key to EXIT Policy Holder creation.");
-                                String confirmStr = input.next();
+                                String confirmStr = input.nextLine();
                                 if (confirmStr.toLowerCase().equals("yes")) {
                                     policyHolder.createPolicyHolder();
                                 } else {
@@ -90,7 +90,7 @@ public class PASDriver {
                         System.out.println("Derived policy premium: " + policy.getPolicyCost());
                         System.out.println("Input 'yes' to BUY the policy, input any key to CANCEL the policy creation.");
                         System.out.println("Note: Newly input Policy, Policy Holder and Vehicle/s will NOT be saved when you CANCEL buying the policy.");
-                        String confirmStr = input.next();
+                        String confirmStr = input.nextLine();
 
                         if (confirmStr.toLowerCase().equals("yes")) {
                             if (policyHolder.getPolicyHolderID() == 0) {
@@ -125,7 +125,7 @@ public class PASDriver {
                             policy.printPolicyDetails();
                             System.out.println("\nAre you sure to cancel this policy?");
                                 System.out.println("Input 'yes' to cancel the policy, input any key to EXIT policy cancellation.");
-                                String confirmStr = input.next();
+                                String confirmStr = input.nextLine();
                                 if (confirmStr.toLowerCase().equals("yes")) {
                                     policy.cancelPolicy(policy.getPolicyId());
                                 } else {
@@ -255,8 +255,8 @@ public class PASDriver {
 
         System.out.println("\nAre you sure you want to save this customer?");
         System.out.println("Input 'yes' to save. Input any key to exit customer creation.");
-        String confirmStr = input.next();
-        if (confirmStr.toLowerCase().equals("yes")) {
+        String confirmStr = input.nextLine();
+        if (confirmStr.equalsIgnoreCase("yes")) {
             customer.saveCustomer();
         } else {
             System.out.println("\nCustomer Account creation cancelled.\n");
@@ -294,18 +294,21 @@ public class PASDriver {
             vehiclesArr[index].setPremiumCharge(vehiclesArr[index].getVehiclePremium(
                                                 vehiclesArr[index].getVehiclePrice(), vehiclesArr[index].getVehicleModelYear()
                                                 , driversLicenceAge));
+            
+            policyPrice += vehiclesArr[index].getPremiumCharge();
             System.out.println("Vehicle premium cost: $" + vehiclesArr[index].getPremiumCharge());
             System.out.println("Are you sure you want to add and save this to your Policy?");
             System.out.println("Input 'yes' to add and save. Input any key to re-input the vehicle.");
-            policyPrice += vehiclesArr[index].getPremiumCharge();
-
-            String confirmStr = input.next();
-            if (confirmStr.toLowerCase().equals("yes")) {
-                System.out.println("Vehicle Saved!\n");
-            } else {
-                System.out.println("Vehicle Removed!\n");
-                index -= 1;
-            }
+            
+            String confirmStr = input.nextLine();
+            if (input.hasNextLine()) {
+                if (confirmStr.equalsIgnoreCase("yes")) {
+                    System.out.println("Vehicle Saved!\n");
+                } else {
+                    System.out.println("Vehicle Removed!\n");
+                    index -= 1;
+                }  
+            } 
         }
 
         return policyPrice;
