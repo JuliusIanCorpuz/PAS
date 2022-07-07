@@ -100,12 +100,13 @@ public class PASDriver {
                         Vehicle[] vehiclesArr = new Vehicle[numOfVehicles];
 
                         policy.setPolicyCost(addVehicle(vehiclesArr, policyHolder.getDriversLicenseAge(), database));
-                        
-                        System.out.println("Policy details are now COMPLETE. Are you sure you want to BUY this policy?");
+
                         System.out.println("Derived policy premium: " + policy.getPolicyCost());
+                        System.out.println("\nPolicy details are now COMPLETE. Are you sure you want to BUY this policy?");
+                        
                         System.out.println("Input 'yes' to BUY the policy, input any key to CANCEL the policy creation.");
                         System.out.println("Note: Newly input Policy, Policy Holder and Vehicle/s will NOT be saved when you CANCEL buying the policy.");
-                        input.nextLine();
+                        
                         String confirmStr = input.nextLine();
                         if (confirmStr.equalsIgnoreCase("yes")) {
                             if (policyHolder.getPolicyHolderID() == 0) {
@@ -114,7 +115,7 @@ public class PASDriver {
                             policy.savePolicy(customer.getCustomerID(), policyHolder.getPolicyHolderID());
                             saveVehicletoDB(vehiclesArr, policy.getPolicyId());
 
-                            System.out.println("\nCONGRATULATIONS! YOU HAVE SUCCESSFULLY BOUGHT A POLICY.\n");
+                            System.out.println("\nCONGRATULATIONS! YOU HAVE SUCCESSFULLY BOUGHT A POLICY.");
                             policy.printPolicyDetails();
                         } else {
                             System.out.println("\nTransaction Cancelled.\n");
